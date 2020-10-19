@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import Axios from 'axios';
 import Header from './component/layout/Header';
-import Home from './component/pages/Home';
-import Login from './component/auth/Login';
-import Register from './component/auth/Register';
 import UserContext from './context/UserContext';
+import Body from './component/pages/Body';
 
-import './style.css';
+import './App.scss';
 
 export default function App() {
   const [userData, setUserData] = useState({
@@ -46,13 +44,7 @@ export default function App() {
       <BrowserRouter>
         <UserContext.Provider value={{ userData, setUserData }}>
           <Header />
-          <div className='container'>
-            <Switch>
-              <Route exact path='/' component={Home} />
-              <Route path='/login' component={Login} />
-              <Route path='/register' component={Register} />
-            </Switch>
-          </div>
+          <Body />
         </UserContext.Provider>
       </BrowserRouter>
     </>

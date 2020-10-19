@@ -1,0 +1,54 @@
+<div className='register-main'>
+      <form id='RegForm' action='#' method='post'>
+        <label htmlFor='Full Name'>
+          Full Name <br />
+        </label>
+        <input
+          type='text'
+          placeholder='Ex. Dela Cruz, Juan, A.'
+          name='fullname'
+          required
+        />
+        <label htmlFor='e-mail'>
+          E-mail <br />
+        </label>
+        <input
+          type='e-mail'
+          placeholder='Ex. example@email.com'
+          name='e-mail'
+          required
+        />
+        <label htmlFor='username'>
+          Username <br />
+        </label>
+        <input
+          type='text'
+          placeholder='Enter Username'
+          name='username'
+          required
+        />
+        <label htmlFor='password'>
+          <br />
+          Password <br />
+        </label>
+        <input
+          type='password'
+          placeholder='Enter Password'
+          name='password'
+          required
+        />
+        <label htmlFor='password'>
+          <br />
+          Re-enter Password <br />
+        </label>
+        <input
+          type='password'
+          placeholder='Re-enter Password'
+          name='Re-enter Pass'
+          required
+        />
+        <button type='submit' className='btn'>
+          Register
+        </button>
+      </form>
+    </div>

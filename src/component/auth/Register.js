@@ -34,8 +34,7 @@ export default function Register() {
   };
 
   return (
-    <div className='page'>
-      <h2>Register</h2>
+    <div className='register-main'>
       {error && (
         <ErrorNotice message={error} clearError={() => setError(undefined)} />
       )}
@@ -66,7 +65,7 @@ export default function Register() {
           onChange={(e) => setDisplayName(e.target.value)}
         />
 
-        <input type='submit' value='Register' />
+        <input type='submit' value='Register' className='btn' />
       </form>
     </div>
   );
