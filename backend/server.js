@@ -2,6 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import colors from 'colors';
 import morgan from 'morgan';
+
 import connectDB from './config/database.js';
 import userRoutes from './routes/userRoutes.js';
 import { notFound, errorHandler } from './middlewares/errorMiddleware.js';
@@ -18,9 +19,6 @@ if (process.env.NODE_ENV === 'development') {
 
 app.use(express.json());
 
-app.get('/', (req, res) => {
-  res.send('Sample');
-});
 
 app.use('/api/users', userRoutes);
 
