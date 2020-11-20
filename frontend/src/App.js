@@ -1,14 +1,15 @@
+/* eslint-disable no-unused-vars */
 import React from 'react';
 import { Container } from 'react-bootstrap';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import Header from './components/Header';
 import HomeScreen from './screens/HomeScreen';
 import LoginScreen from './screens/LoginScreen';
-import RegisterScreen from './screens/RegisterScreen';
-import QuestionScreen from './screens/QuestionScreen';
-import ForgetPassword from './screens/ForgetPassword';
+import Forget from './screens/ForgetPasswordScreen/Form';
 import Footer from './components/Footer';
-
+import Form from './screens/RegisterScreen/Form';
+import UserListScreen from './screens/UserListScreen';
+import UserEditScreen from './screens/UserEditScreen';
 const App = () => {
     return (
         <Router>
@@ -25,10 +26,14 @@ const App = () => {
             >
                 <Container>
                     <Route path='/login' component={LoginScreen} />
-                    <Route path='/register' component={RegisterScreen} />
-                    <Route path='/question' component={QuestionScreen} />
-                    <Route path='/ForgetPassword' component={ForgetPassword} />
+                    <Route path='/register' component={Form} />
+                    <Route path='/ForgetPassword' component={Forget} />
                     <Route path='/' component={HomeScreen} exact />
+                    <Route path='/admin/userlist' component={UserListScreen} />
+                    <Route
+                        path='/admin/user/:id/edit'
+                        component={UserEditScreen}
+                    />
                 </Container>
             </main>
             <Footer />

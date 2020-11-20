@@ -3,7 +3,7 @@ import bcrypt from 'bcryptjs';
 
 const userSchema = mongoose.Schema(
     {
-        name: {
+        fullName: {
             type: String,
             required: true,
         },
@@ -16,7 +16,7 @@ const userSchema = mongoose.Schema(
             type: String,
             required: true,
         },
-        questions: {
+        question: {
             type: String,
             required: true,
         },
@@ -29,6 +29,11 @@ const userSchema = mongoose.Schema(
             required: true,
             default: false,
         },
+        isActive: {
+            type: Boolean,
+            default: true,
+            required: true,
+        },
     },
     {
         timestamps: true,
@@ -39,16 +44,18 @@ userSchema.methods.matchPassword = async function (enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password);
 };
 
-userSchema.methods.tanong = async function (enteredAnswer) {
-    return enteredAnswer === this.answer;
+userSchema.methods.compareAnswer = async function (enteredKey) {
+    return await bcrypt.compare(enteredKey, this.answer);
 };
 
 userSchema.pre('save', async function (next) {
+    this.answer = this.answer.toLowerCase();
     if (!this.isModified('password')) {
         next();
     }
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
+    this.answer = await bcrypt.hash(this.answer, salt);
 });
 
 const User = mongoose.model('User', userSchema);

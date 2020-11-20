@@ -5,11 +5,21 @@ import {
     userLoginReducer,
     userRegisterReducer,
     userForgetReducer,
+    userQuestionReducer,
+    userListReducer,
+    userDeleteReducer,
+    userDetailsReducer,
+    userUpdateReducer,
 } from './reducers/userReducers';
 const reducer = combineReducers({
     userLogin: userLoginReducer,
     userRegister: userRegisterReducer,
     userForget: userForgetReducer,
+    userQuestion: userQuestionReducer,
+    userList: userListReducer,
+    userDelete: userDeleteReducer,
+    userDetails: userDetailsReducer,
+    userUpdate: userUpdateReducer,
 });
 
 const userInfoFromStorage = localStorage.getItem('userInfo')
@@ -19,10 +29,14 @@ const userInfoFromStorage = localStorage.getItem('userInfo')
 const userFromStorage = localStorage.getItem('user')
     ? JSON.parse(localStorage.getItem('user'))
     : null;
+const userCheckQuestionStorage = localStorage.getItem('userQuestion')
+    ? JSON.parse(localStorage.getItem('userQuestion'))
+    : null;
 
 const initialState = {
     userLogin: { userInfo: userInfoFromStorage },
-    userForget: { user: userFromStorage },
+    userForget: { user: userCheckQuestionStorage },
+    userQuestion: { user: userFromStorage },
 };
 
 const middleware = [thunk];

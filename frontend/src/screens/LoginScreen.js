@@ -1,15 +1,60 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Form, Button, Row, Col, Card } from 'react-bootstrap';
+import { Form, Button, Row, Col, Card, Container } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
 import FormContainer from '../components/FormContainer';
+import { useForm } from './RegisterScreen/useForm';
 import { login } from '../actions/userActions';
+import Controls from '../components/controls/Control';
+import { useHistory, useLocation } from 'react-router-dom';
+const theme = {
+    root: {
+        width: '60%',
+        position: 'absolute',
+        marginTop: '2.5rem',
+        marginLeft: '6rem',
+    },
+    field: {
+        marginTop: '3.5rem',
+    },
+    controls: {
+        marginTop: '2rem',
+    },
+    container: {
+        marginLeft: '-.7rem',
+    },
+    text: {
+        textAlign: 'center',
+        fontWeight: 'bold',
+        fontSize: '40px',
+    },
+    sidePanel: {
+        background: 'linear-gradient(50deg, #FF4B2B 40%, #FF416C 90%)',
+        borderTopRightRadius: 30,
+        borderBottomRightRadius: 30,
+        color: 'white',
+        paddingTop: '8rem',
+    },
+    mainPanel: {
+        background: 'linear-gradient(45deg, #FFFFFF 30%, #FFFFf8 90%)',
+        height: '75vh',
+        borderTopLeftRadius: 30,
+        borderBottomLeftRadius: 30,
+    },
+    textLink: {
+        color: 'black',
+        fontSize: '1em',
+    },
+};
 
-const LoginScreen = ({ location, history }) => {
+const LoginScreen = (props) => {
+    const location = useLocation();
+    const history = useHistory();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [message, setMessage] = useState(null);
 
     const redirect = location.search ? location.search.split('=')[1] : '/';
 
@@ -26,88 +71,101 @@ const LoginScreen = ({ location, history }) => {
 
     const submitHandler = (e) => {
         e.preventDefault();
-        dispatch(login(email, password));
+        if (email.length === 0 || password.length === 0) {
+            setMessage('Please fill in required fields');
+        } else {
+            dispatch(login(email, password));
+        }
     };
     return (
-        <FormContainer>
-            <Card
-                border='danger'
-                style={{
-                    width: '30rem',
-                    height: '25rem',
-                    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                    color: 'white',
-                    marginTop: '20vh',
-                }}
-            >
-                <h1 className='text-center' style={{ color: 'white' }}>
-                    Sign In
-                </h1>
-                {error && <Message variant='danger'>{error}</Message>}
-                {loading && <Loader />}
-                <Form onSubmit={submitHandler} className='mt-5'>
-                    <Form.Group controlId='email'>
-                        <Form.Control
-                            className='ml-4'
-                            style={{ width: '27rem' }}
-                            type='email'
-                            placeholder='Enter Email'
+        <Container style={theme.root}>
+            <Row>
+                <Col style={theme.mainPanel}>
+                    <h1 style={theme.text}>Credentials</h1>
+                    <Container style={theme.container}>
+                        {message && (
+                            <Message variant='danger'>{message}</Message>
+                        )}
+                        {error && <Message variant='danger'>{error}</Message>}
+                        {loading && <Loader />}
+                    </Container>
+                    <Container style={theme.field}>
+                        <Controls.Input
+                            label='Email'
+                            name='email'
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                        ></Form.Control>
-                    </Form.Group>
-                    <Form.Group controlId='password'>
-                        <Form.Control
-                            className='ml-4'
-                            style={{ width: '27rem' }}
-                            type='password'
-                            placeholder='Enter Password'
+                        />
+                        <Controls.Input
+                            label='Password'
+                            name='password'
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                        ></Form.Control>
-                    </Form.Group>
-                    <Button
-                        type='submit'
-                        variant='danger'
-                        className='ml-4 '
-                        style={{ width: '27rem' }}
+                            type='password'
+                        />
+                        <Controls.Button
+                            type='submit'
+                            text='Submit'
+                            onClick={submitHandler}
+                            style={theme.controls}
+                        />
+                    </Container>
+                    <Row className='py-3 text-center' style={theme.textLink}>
+                        <Col>
+                            <Link
+                                to={'/ForgetPassword'}
+                                style={{
+                                    textDecoration: 'underline',
+                                }}
+                            >
+                                Forget Password?
+                            </Link>
+                        </Col>
+                    </Row>{' '}
+                </Col>
+                <Col style={theme.sidePanel}>
+                    <h1
+                        style={{
+                            fontSize: '3rem',
+                            textAlign: 'center',
+                            fontWeight: 1000,
+                            color: 'white',
+                        }}
                     >
-                        Sign In
-                    </Button>
-                </Form>
-                <Row className='py-3 text-center' style={{ fontSize: '1em' }}>
-                    <Col>
-                        <Link
-                            to={'/ForgetPassword'}
+                        ScrumBug Cinema
+                    </h1>
+                    <p
+                        style={{
+                            fontSize: '.9rem',
+                            textAlign: 'center',
+                            fontWeight: 1000,
+                        }}
+                    >
+                        Enter your personal details and start journey with us
+                    </p>
+                    <Link
+                        to={
+                            redirect
+                                ? `/register?redirect=${redirect}`
+                                : '/register'
+                        }
+                    >
+                        <Button
+                            variant='outline-info'
                             style={{
+                                fontSize: '1em',
                                 color: 'white',
-                                textDecoration: 'underline',
+                                width: '10vw',
+                                borderRadius: 300,
+                                marginLeft: '9em',
                             }}
                         >
-                            Forget Password?
-                        </Link>
-                    </Col>
-                </Row>{' '}
-                <Row className='text-center' style={{ fontSize: '1em' }}>
-                    <Col>
-                        Doesn't have an account yet?{' '}
-                        <Link
-                            to={
-                                redirect
-                                    ? `/register?redirect=${redirect}`
-                                    : '/register'
-                            }
-                            style={{
-                                color: 'white',
-                                textDecoration: 'underline',
-                            }}
-                        >
-                            Register
-                        </Link>
-                    </Col>
-                </Row>{' '}
-            </Card>
-        </FormContainer>
+                            Sign Up
+                        </Button>
+                    </Link>
+                </Col>
+            </Row>
+        </Container>
     );
 };
 
