@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { register } from '../../actions/userActions';
 import { useHistory, useLocation } from 'react-router-dom';
@@ -13,7 +13,7 @@ export const Confirm = (props) => {
     const dispatch = useDispatch();
 
     const userRegister = useSelector((state) => state.userRegister);
-    const { loading, error, userInfo } = userRegister;
+    const { userInfo } = userRegister;
 
     useEffect(() => {
         if (userInfo) {

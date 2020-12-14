@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import AccountSetup from './AccountSetup';
 import SecurityQuestion from './SecurityQuestion';
-import Confirm from './Confirm';
 import ChangePassword from './ChangePassword';
 import LoginScreen from '../LoginScreen';
 export class Form extends Component {

@@ -4,20 +4,22 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import {
     userLoginReducer,
     userRegisterReducer,
-    userForgetReducer,
-    userQuestionReducer,
+    userEmailAuthReducer,
+    userAuthenticationReducer_v1,
+    userAuthenticationReducer_v2,
+    userAuthenticationReducer_v3,
     userListReducer,
-    userDeleteReducer,
     userDetailsReducer,
     userUpdateReducer,
 } from './reducers/userReducers';
 const reducer = combineReducers({
     userLogin: userLoginReducer,
     userRegister: userRegisterReducer,
-    userForget: userForgetReducer,
-    userQuestion: userQuestionReducer,
+    userEmailAuth: userEmailAuthReducer,
+    userAuthentication_v1: userAuthenticationReducer_v1,
+    userAuthentication_v2: userAuthenticationReducer_v2,
+    userAuthentication_v3: userAuthenticationReducer_v3,
     userList: userListReducer,
-    userDelete: userDeleteReducer,
     userDetails: userDetailsReducer,
     userUpdate: userUpdateReducer,
 });
@@ -29,6 +31,7 @@ const userInfoFromStorage = localStorage.getItem('userInfo')
 const userFromStorage = localStorage.getItem('user')
     ? JSON.parse(localStorage.getItem('user'))
     : null;
+
 const userCheckQuestionStorage = localStorage.getItem('userQuestion')
     ? JSON.parse(localStorage.getItem('userQuestion'))
     : null;

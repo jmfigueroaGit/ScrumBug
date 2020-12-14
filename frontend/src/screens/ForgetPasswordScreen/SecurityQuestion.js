@@ -6,8 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { compareData } from '../../actions/userActions';
 import Message from '../../components/Message';
 import Loader from '../../components/Loader';
-import { Button, Col, Form, Row } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Col, Form, Row } from 'react-bootstrap';
 export const getQuestionCollection = () => [
     { id: '1', title: 'What is the name of the road you grew up on?' },
     { id: '2', title: 'What is your mother’s maiden name?' },
@@ -47,9 +46,6 @@ const theme = {
         background: 'linear-gradient(45deg, #FFFFFF 30%, #FFFFf8 90%)',
         height: '75vh',
         borderRadius: 30,
-
-        // borderTopLeftRadius: 30,
-        // borderBottomLeftRadius: 30,
     },
     textLink: {
         color: 'black',
@@ -79,7 +75,7 @@ export const SecurityQuestion = (props) => {
     };
 
     const userForget = useSelector((state) => state.userForget);
-    const { loading, error, userInfo } = userForget;
+    const { loading, error } = userForget;
 
     const dispatch = useDispatch();
 

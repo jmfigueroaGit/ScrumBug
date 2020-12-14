@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
-import { Link, useHistory, useLocation } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import Controls from '../../components/controls/Control';
 import { useForm } from './useForm';
 import { useDispatch, useSelector } from 'react-redux';
@@ -48,7 +48,6 @@ const theme = {
 };
 
 export const ChangePassword = (props) => {
-    const location = useLocation();
     const history = useHistory();
     const { values, inputChange } = props;
 
@@ -56,9 +55,9 @@ export const ChangePassword = (props) => {
         let temp = { ...errorMessage };
         if ('password' in fieldValues)
             temp.password =
-                fieldValues.password.length > 3
+                fieldValues.password.length >= 6
                     ? ''
-                    : 'Minimum of 4 numbers required.';
+                    : 'Minimum of 6 numbers required.';
         setError({
             ...temp,
         });
@@ -66,7 +65,7 @@ export const ChangePassword = (props) => {
             temp.confirmPassword =
                 fieldValues.confirmPassword.length > 3
                     ? ''
-                    : 'Minimum of 4 numbers required.';
+                    : 'Minimum of 6 numbers required.';
         setError({
             ...temp,
         });
@@ -76,7 +75,7 @@ export const ChangePassword = (props) => {
     };
 
     const userRegister = useSelector((state) => state.userRegister);
-    const { loading, error, userInfo } = userRegister;
+    const { loading, error } = userRegister;
 
     const dispatch = useDispatch();
 

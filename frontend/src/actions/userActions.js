@@ -3,9 +3,9 @@ import {
     USER_DELETE_FAIL,
     USER_DELETE_REQUEST,
     USER_DELETE_SUCCESS,
-    USER_FORGET_FAIL,
-    USER_FORGET_REQUEST,
-    USER_FORGET_SUCCESS,
+    USER_EMAIL_AUTH_REQUEST,
+    USER_EMAIL_AUTH_SUCCESS,
+    USER_EMAIL_AUTH_FAIL,
     USER_LIST_FAIL,
     USER_LIST_REQUEST,
     USER_LIST_SUCCESS,
@@ -13,9 +13,15 @@ import {
     USER_LOGIN_FAIL,
     USER_LOGIN_REQUEST,
     USER_LOGIN_SUCCESS,
-    USER_QUESTION_FAIL,
-    USER_QUESTION_PROCEED,
-    USER_QUESTION_SUCCESS,
+    USER_AUTHENTICATION_v1_FAIL,
+    USER_AUTHENTICATION_v1_REQUEST,
+    USER_AUTHENTICATION_v1_SUCCESS,
+    USER_AUTHENTICATION_v2_FAIL,
+    USER_AUTHENTICATION_v2_SUCCESS,
+    USER_AUTHENTICATION_v2_REQUEST,
+    USER_AUTHENTICATION_v3_FAIL,
+    USER_AUTHENTICATION_v3_SUCCESS,
+    USER_AUTHENTICATION_v3_REQUEST,
     USER_REGISTER_FAIL,
     USER_REGISTER_REQUEST,
     USER_REGISTER_SUCCESS,
@@ -66,7 +72,7 @@ export const login = (email, password) => async (dispatch) => {
 export const forgetPassword = (email, password) => async (dispatch) => {
     try {
         dispatch({
-            type: USER_FORGET_REQUEST,
+            type: USER_EMAIL_AUTH_REQUEST,
         });
 
         const config = {
@@ -76,20 +82,20 @@ export const forgetPassword = (email, password) => async (dispatch) => {
         };
 
         const { data } = await axios.put(
-            '/api/users/ForgetPassword',
+            '/api/users/forgotPassword',
             { email, password },
             config
         );
 
         dispatch({
-            type: USER_FORGET_SUCCESS,
+            type: USER_EMAIL_AUTH_SUCCESS,
             payload: data,
         });
 
         localStorage.setItem('userQuestion', JSON.stringify(data));
     } catch (error) {
         dispatch({
-            type: USER_FORGET_FAIL,
+            type: USER_EMAIL_AUTH_FAIL,
             payload:
                 error.response && error.response.data.message
                     ? error.response.data.message
@@ -146,7 +152,7 @@ export const register = (fullName, email, password, question, answer) => async (
     }
 };
 
-export const checkUser = (email, props) => async (dispatch) => {
+export const registerAuth = (email, props) => async (dispatch) => {
     try {
         dispatch({
             type: USER_REGISTER_REQUEST,
@@ -158,7 +164,11 @@ export const checkUser = (email, props) => async (dispatch) => {
             },
         };
 
-        const { data } = await axios.post('api/users/check', { email }, config);
+        const { data } = await axios.post(
+            'api/users/register/auth',
+            { email },
+            config
+        );
 
         dispatch({
             type: USER_REGISTER_SUCCESS,
@@ -177,10 +187,10 @@ export const checkUser = (email, props) => async (dispatch) => {
     }
 };
 
-export const findUser = (email, props) => async (dispatch) => {
+export const findUserAuth = (email) => async (dispatch) => {
     try {
         dispatch({
-            type: USER_QUESTION_PROCEED,
+            type: USER_EMAIL_AUTH_REQUEST,
         });
 
         const config = {
@@ -189,18 +199,21 @@ export const findUser = (email, props) => async (dispatch) => {
             },
         };
 
-        const { data } = await axios.post('api/users/find', { email }, config);
+        const { data } = await axios.post(
+            '/api/users/forgotPassword/auth',
+            { email },
+            config
+        );
 
         dispatch({
-            type: USER_QUESTION_SUCCESS,
+            type: USER_EMAIL_AUTH_SUCCESS,
             payload: data,
         });
 
         localStorage.setItem('user', JSON.stringify(data));
-        props.nextStep();
     } catch (error) {
         dispatch({
-            type: USER_QUESTION_FAIL,
+            type: USER_EMAIL_AUTH_FAIL,
             payload:
                 error.response && error.response.data.message
                     ? error.response.data.message
@@ -209,12 +222,10 @@ export const findUser = (email, props) => async (dispatch) => {
     }
 };
 
-export const compareData = (email, question, answer, props) => async (
-    dispatch
-) => {
+export const authQuestion_1 = (email, answer) => async (dispatch) => {
     try {
         dispatch({
-            type: USER_FORGET_REQUEST,
+            type: USER_AUTHENTICATION_v1_REQUEST,
         });
 
         const config = {
@@ -223,21 +234,91 @@ export const compareData = (email, question, answer, props) => async (
             },
         };
 
-        const { data } = await axios.put(
-            'api/users/compare',
-            { email, question, answer },
+        const { data } = await axios.post(
+            'api/users/forgotPassword/auth/v1',
+            { email, answer },
             config
         );
 
         dispatch({
-            type: USER_FORGET_SUCCESS,
+            type: USER_AUTHENTICATION_v1_SUCCESS,
+            payload: data,
         });
 
-        localStorage.setItem('userQuestion', JSON.stringify(data));
-        props.nextStep();
+        localStorage.setItem('authentication_v1', JSON.stringify(data));
     } catch (error) {
         dispatch({
-            type: USER_FORGET_FAIL,
+            type: USER_AUTHENTICATION_v1_FAIL,
+            payload:
+                error.response && error.response.data.message
+                    ? error.response.data.message
+                    : error.message,
+        });
+    }
+};
+
+export const authQuestion_2 = (email, answer) => async (dispatch) => {
+    try {
+        dispatch({
+            type: USER_AUTHENTICATION_v2_REQUEST,
+        });
+
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        };
+
+        const { data } = await axios.post(
+            'api/users/forgotPassword/auth/v2',
+            { email, answer },
+            config
+        );
+
+        dispatch({
+            type: USER_AUTHENTICATION_v2_SUCCESS,
+            payload: data,
+        });
+
+        localStorage.setItem('authentication_v2', JSON.stringify(data));
+    } catch (error) {
+        dispatch({
+            type: USER_AUTHENTICATION_v2_FAIL,
+            payload:
+                error.response && error.response.data.message
+                    ? error.response.data.message
+                    : error.message,
+        });
+    }
+};
+
+export const authQuestion_3 = (email, answer) => async (dispatch) => {
+    try {
+        dispatch({
+            type: USER_AUTHENTICATION_v3_REQUEST,
+        });
+
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        };
+
+        const { data } = await axios.post(
+            'api/users/forgotPassword/auth/v3',
+            { email, answer },
+            config
+        );
+
+        dispatch({
+            type: USER_AUTHENTICATION_v3_SUCCESS,
+            payload: data,
+        });
+
+        localStorage.setItem('authentication_v3', JSON.stringify(data));
+    } catch (error) {
+        dispatch({
+            type: USER_AUTHENTICATION_v3_FAIL,
             payload:
                 error.response && error.response.data.message
                     ? error.response.data.message
@@ -262,7 +343,7 @@ export const listUsers = () => async (dispatch, getState) => {
             },
         };
 
-        const { data } = await axios.get(`/api/users`, config);
+        const { data } = await axios.get(`/api/users/admin`, config);
 
         dispatch({
             type: USER_LIST_SUCCESS,
@@ -397,37 +478,3 @@ export const updateUser = (user) => async (dispatch, getState) => {
         });
     }
 };
-
-// export const getUserDetails = (id) => async (dispatch, getState) => {
-//     try {
-//         dispatch({
-//             type: USER_DETAILS_REQUEST,
-//         });
-
-//         const {
-//             userLogin: { userInfo },
-//         } = getState();
-
-//         const config = {
-//             headers: {
-//                 'Content-Type': 'application/json',
-//                 Authorization: `Bearer ${userInfo.token}`,
-//             },
-//         };
-
-//         const { data } = await axios.get(`api/users/${id}`, config);
-
-//         dispatch({
-//             type: USER_DETAILS_SUCCESS,
-//             payload: data,
-//         });
-//     } catch (error) {
-//         dispatch({
-//             type: USER_DETAILS_FAIL,
-//             payload:
-//                 error.response && error.response.data.message
-//                     ? error.response.data.message
-//                     : error.message,
-//         });
-//     }
-// };

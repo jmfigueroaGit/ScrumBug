@@ -4,7 +4,7 @@ import { Table, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
-import { listUsers, deleteUser, getUserDetails } from '../actions/userActions';
+import { listUsers, getUserDetails } from '../actions/userActions';
 import { Form } from './RegisterScreen/useForm';
 
 const theme = {
@@ -66,12 +66,6 @@ const UserListScreen = ({ history }) => {
         }
     }, [dispatch, history, successDelete, userInfo]);
 
-    const deleteHandler = (id) => {
-        if (window.confirm('Are you sure')) {
-            dispatch(deleteUser(id));
-            dispatch(getUserDetails(id));
-        }
-    };
     const editHandler = (id) => {
         dispatch(getUserDetails(id));
         history.push(`/admin/user/${id}/edit`);

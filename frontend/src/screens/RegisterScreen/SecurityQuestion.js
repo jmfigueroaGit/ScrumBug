@@ -81,7 +81,7 @@ export const SecurityQuestion = (props) => {
     const { errorMessage, setError } = useForm(values, true, validate);
 
     const userRegister = useSelector((state) => state.userRegister);
-    const { loading, error, userInfo } = userRegister;
+    const { userInfo } = userRegister;
 
     useEffect(() => {
         if (userInfo) {

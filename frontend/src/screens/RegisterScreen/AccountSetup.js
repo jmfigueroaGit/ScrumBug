@@ -5,7 +5,7 @@ import { Col } from 'react-bootstrap';
 import Controls from '../../components/controls/Control';
 import { useForm } from './useForm';
 import { useDispatch, useSelector } from 'react-redux';
-import { checkUser } from '../../actions/userActions';
+import { registerAuth } from '../../actions/userActions';
 import Message from '../../components/Message';
 import Loader from '../../components/Loader';
 
@@ -76,7 +76,7 @@ export const AccountSetup = (props) => {
     };
 
     const userRegister = useSelector((state) => state.userRegister);
-    const { loading, error, userInfo } = userRegister;
+    const { loading, error } = userRegister;
 
     const dispatch = useDispatch();
 
@@ -85,7 +85,7 @@ export const AccountSetup = (props) => {
     const handleInput = (e) => {
         e.preventDefault();
         if (validate()) {
-            dispatch(checkUser(values.email, props));
+            dispatch(registerAuth(values.email, props));
         }
     };
     return (

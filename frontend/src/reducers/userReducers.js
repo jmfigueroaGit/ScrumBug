@@ -1,7 +1,4 @@
 import {
-    USER_FORGET_FAIL,
-    USER_FORGET_REQUEST,
-    USER_FORGET_SUCCESS,
     USER_LOGIN_FAIL,
     USER_LOGIN_REQUEST,
     USER_LOGIN_SUCCESS,
@@ -9,9 +6,18 @@ import {
     USER_REGISTER_FAIL,
     USER_REGISTER_REQUEST,
     USER_REGISTER_SUCCESS,
-    USER_QUESTION_FAIL,
-    USER_QUESTION_SUCCESS,
-    USER_QUESTION_PROCEED,
+    USER_EMAIL_AUTH_REQUEST,
+    USER_EMAIL_AUTH_SUCCESS,
+    USER_EMAIL_AUTH_FAIL,
+    USER_AUTHENTICATION_v1_FAIL,
+    USER_AUTHENTICATION_v1_SUCCESS,
+    USER_AUTHENTICATION_v1_REQUEST,
+    USER_AUTHENTICATION_v2_FAIL,
+    USER_AUTHENTICATION_v2_SUCCESS,
+    USER_AUTHENTICATION_v2_REQUEST,
+    USER_AUTHENTICATION_v3_FAIL,
+    USER_AUTHENTICATION_v3_SUCCESS,
+    USER_AUTHENTICATION_v3_REQUEST,
     USER_LIST_REQUEST,
     USER_LIST_SUCCESS,
     USER_LIST_FAIL,
@@ -44,26 +50,52 @@ export const userLoginReducer = (state = {}, action) => {
     }
 };
 
-export const userForgetReducer = (state = {}, action) => {
+export const userEmailAuthReducer = (state = {}, action) => {
     switch (action.type) {
-        case USER_FORGET_REQUEST:
+        case USER_EMAIL_AUTH_REQUEST:
             return { loading: true };
-        case USER_FORGET_SUCCESS:
-            return { loading: false, userInfo: action.payload };
-        case USER_FORGET_FAIL:
+        case USER_EMAIL_AUTH_SUCCESS:
+            return { loading: false, user: action.payload };
+        case USER_EMAIL_AUTH_FAIL:
             return { loading: false, error: action.payload };
         default:
             return state;
     }
 };
 
-export const userQuestionReducer = (state = {}, action) => {
+export const userAuthenticationReducer_v1 = (state = {}, action) => {
     switch (action.type) {
-        case USER_QUESTION_PROCEED:
+        case USER_AUTHENTICATION_v1_REQUEST:
             return { loading: true };
-        case USER_QUESTION_SUCCESS:
-            return { loading: false, userInfo: action.payload };
-        case USER_QUESTION_FAIL:
+        case USER_AUTHENTICATION_v1_SUCCESS:
+            return { loading: false, authentication_v1: action.payload };
+        case USER_AUTHENTICATION_v1_FAIL:
+            return { loading: false, error: action.payload };
+        default:
+            return state;
+    }
+};
+
+export const userAuthenticationReducer_v2 = (state = {}, action) => {
+    switch (action.type) {
+        case USER_AUTHENTICATION_v2_REQUEST:
+            return { loading: true };
+        case USER_AUTHENTICATION_v2_SUCCESS:
+            return { loading: false, authentication_v2: action.payload };
+        case USER_AUTHENTICATION_v2_FAIL:
+            return { loading: false, error: action.payload };
+        default:
+            return state;
+    }
+};
+
+export const userAuthenticationReducer_v3 = (state = {}, action) => {
+    switch (action.type) {
+        case USER_AUTHENTICATION_v3_REQUEST:
+            return { loading: true };
+        case USER_AUTHENTICATION_v3_SUCCESS:
+            return { loading: false, authentication_v3: action.payload };
+        case USER_AUTHENTICATION_v3_FAIL:
             return { loading: false, error: action.payload };
         default:
             return state;

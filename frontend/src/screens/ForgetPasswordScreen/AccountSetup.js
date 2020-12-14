@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
-import { Link, useHistory, useLocation } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 import Controls from '../../components/controls/Control';
-import { useForm } from './useForm';
 import { useDispatch, useSelector } from 'react-redux';
-import { findUser } from '../../actions/userActions';
+import { findUserAuth } from '../../actions/userActions';
 import Message from '../../components/Message';
 import Loader from '../../components/Loader';
 const theme = {
@@ -48,35 +47,30 @@ const theme = {
 };
 
 export const AccountSetup = (props) => {
-    const { values, inputChange } = props;
-    const validate = (fieldValues = values) => {
-        let temp = { ...errorMessage };
-        if ('email' in fieldValues)
-            temp.email =
-                /$^|.+@.+..+/.test(fieldValues.email) && fieldValues.email
-                    ? ''
-                    : 'Email is not valid.';
-        setError({
-            ...temp,
-        });
-
-        if (fieldValues === values)
-            return Object.values(temp).every((x) => x === '');
-    };
-
-    const userQuestion = useSelector((state) => state.userQuestion);
-    const { loading, error, userInfo } = userQuestion;
+    const history = useHistory();
+    const [email, setEmail] = useState('');
+    const [message, setMessage] = useState(null);
 
     const dispatch = useDispatch();
 
-    const { errorMessage, setError } = useForm(values, true, validate);
+    const userEmailAuth = useSelector((state) => state.userEmailAuth);
+    const { loading, error, user } = userEmailAuth;
+
+    useEffect(() => {
+        if (user) {
+            history.push('/authentication-1');
+        }
+    }, [history, user]);
 
     const handleInput = (e) => {
         e.preventDefault();
-        if (validate()) {
-            dispatch(findUser(values.email, props));
+        if (email.length === 0) {
+            setMessage('Please fill in required fields');
+        } else {
+            dispatch(findUserAuth(email));
         }
     };
+
     return (
         <Form>
             <Container style={theme.root}>
@@ -84,6 +78,9 @@ export const AccountSetup = (props) => {
                     <Col style={theme.mainPanel}>
                         <h1 style={theme.text}>Credentials</h1>
                         <Container>
+                            {message && (
+                                <Message variant='danger'>{message}</Message>
+                            )}
                             {error && (
                                 <Message variant='danger'>{error}</Message>
                             )}
@@ -93,9 +90,8 @@ export const AccountSetup = (props) => {
                             <Controls.Input
                                 label='Email'
                                 name='email'
-                                value={values.email}
-                                onChange={inputChange('email')}
-                                error={errorMessage.email}
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
                             />
                             <Controls.Button
                                 type='submit'
@@ -125,7 +121,7 @@ export const AccountSetup = (props) => {
                             Enter your personal details and start journey with
                             us
                         </p>
-                        <Link to={'/register'}>
+                        <Link to='/login'>
                             <Button
                                 variant='outline-info'
                                 style={{

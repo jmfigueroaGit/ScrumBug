@@ -5,11 +5,16 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 import Header from './components/Header';
 import HomeScreen from './screens/HomeScreen';
 import LoginScreen from './screens/LoginScreen';
-import Forget from './screens/ForgetPasswordScreen/Form';
+import EmailAuth from './screens/ForgetPasswordScreen/AccountSetup';
+import Authentication1 from './screens/ForgetPasswordScreen/Authentication_1';
+import Authentication2 from './screens/ForgetPasswordScreen/Authentication_2';
+import Authentication3 from './screens/ForgetPasswordScreen/Authentication_3';
+import ResetPassword from './screens/ForgetPasswordScreen/ChangePassword';
 import Footer from './components/Footer';
 import Form from './screens/RegisterScreen/Form';
 import UserListScreen from './screens/UserListScreen';
 import UserEditScreen from './screens/UserEditScreen';
+
 const App = () => {
     return (
         <Router>
@@ -27,8 +32,23 @@ const App = () => {
                 <Container>
                     <Route path='/login' component={LoginScreen} />
                     <Route path='/register' component={Form} />
-                    <Route path='/ForgetPassword' component={Forget} />
-                    <Route path='/' component={HomeScreen} exact />
+
+                    <Route path='/forgotPassword' component={EmailAuth} />
+                    <Route
+                        path='/authentication-1'
+                        component={Authentication1}
+                    />
+                    <Route
+                        path='/authentication-2'
+                        component={Authentication2}
+                    />
+                    <Route
+                        path='/authentication-3'
+                        component={Authentication3}
+                    />
+                    <Route path='/resetPassword' component={ResetPassword} />
+
+                    <Route path='/home' component={HomeScreen} exact />
                     <Route path='/admin/userlist' component={UserListScreen} />
                     <Route
                         path='/admin/user/:id/edit'

@@ -87,12 +87,12 @@ const UserEditScreen = ({ match, history }) => {
     };
 
     return (
-        <Form style={theme.mainPanel}>
-            <Link to='/admin/userlist' className='btn btn-dark my-3 mx-4'>
+        <div style={theme.mainPanel}>
+            <Link to='/admin/userlist' className='btn btn-dark my-3 mx-3'>
                 Go Back
             </Link>
             <FormContainer>
-                <h1 style={theme.text}>Edit User</h1>
+                <h1>Edit User</h1>
                 {loadingUpdate && <Loader />}
                 {errorUpdate && (
                     <Message variant='danger'>{errorUpdate}</Message>
@@ -139,7 +139,7 @@ const UserEditScreen = ({ match, history }) => {
                     </Form>
                 )}
             </FormContainer>
-        </Form>
+        </div>
     );
 };
 

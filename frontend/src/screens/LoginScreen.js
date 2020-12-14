@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Form, Button, Row, Col, Card, Container } from 'react-bootstrap';
+import { Button, Row, Col, Container } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
-import FormContainer from '../components/FormContainer';
-import { useForm } from './RegisterScreen/useForm';
 import { login } from '../actions/userActions';
 import Controls from '../components/controls/Control';
 import { useHistory, useLocation } from 'react-router-dom';
@@ -113,7 +111,7 @@ const LoginScreen = (props) => {
                     <Row className='py-3 text-center' style={theme.textLink}>
                         <Col>
                             <Link
-                                to={'/ForgetPassword'}
+                                to={'/forgotPassword'}
                                 style={{
                                     textDecoration: 'underline',
                                 }}
