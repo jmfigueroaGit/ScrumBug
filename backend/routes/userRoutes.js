@@ -20,7 +20,7 @@ const router = express();
     //from User Controller
 router.route('/register').post(registerUser);
 router.route('/login').post(loginUser);
-router.route('/forgotPassword').put(forgotPassword);
+router.route('/forgotPassword/resetPassword').put(forgotPassword);
 router.route('/profile').get(getUser);
 
 //Protected route for admin only

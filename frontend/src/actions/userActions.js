@@ -1,37 +1,42 @@
 import axios from 'axios';
 import {
-    USER_DELETE_FAIL,
-    USER_DELETE_REQUEST,
-    USER_DELETE_SUCCESS,
+    USER_LOGIN_FAIL,
+    USER_LOGIN_REQUEST,
+    USER_LOGIN_SUCCESS,
+    USER_REGISTER_FAIL,
+    USER_REGISTER_REQUEST,
+    USER_REGISTER_SUCCESS,
     USER_EMAIL_AUTH_REQUEST,
     USER_EMAIL_AUTH_SUCCESS,
     USER_EMAIL_AUTH_FAIL,
+    USER_EMAIL_AUTH_RESET,
+    USER_AUTHENTICATION_v1_FAIL,
+    USER_AUTHENTICATION_v1_REQUEST,
+    USER_AUTHENTICATION_v1_SUCCESS,
+    USER_AUTHENTICATION_v1_RESET,
+    USER_AUTHENTICATION_v2_FAIL,
+    USER_AUTHENTICATION_v2_SUCCESS,
+    USER_AUTHENTICATION_v2_REQUEST,
+    USER_AUTHENTICATION_v2_RESET,
+    USER_AUTHENTICATION_v3_FAIL,
+    USER_AUTHENTICATION_v3_SUCCESS,
+    USER_AUTHENTICATION_v3_REQUEST,
+    USER_AUTHENTICATION_v3_RESET,
+    USER_UPDATE_PASSWORD_FAIL,
+    USER_UPDATE_PASSWORD_SUCCESS,
+    USER_UPDATE_PASSWORD_REQUEST,
+    USER_UPDATE_PASSWORD_RESET,
     USER_LIST_FAIL,
     USER_LIST_REQUEST,
     USER_LIST_SUCCESS,
     USER_LIST_RESET,
-    USER_LOGIN_FAIL,
-    USER_LOGIN_REQUEST,
-    USER_LOGIN_SUCCESS,
-    USER_AUTHENTICATION_v1_FAIL,
-    USER_AUTHENTICATION_v1_REQUEST,
-    USER_AUTHENTICATION_v1_SUCCESS,
-    USER_AUTHENTICATION_v2_FAIL,
-    USER_AUTHENTICATION_v2_SUCCESS,
-    USER_AUTHENTICATION_v2_REQUEST,
-    USER_AUTHENTICATION_v3_FAIL,
-    USER_AUTHENTICATION_v3_SUCCESS,
-    USER_AUTHENTICATION_v3_REQUEST,
-    USER_REGISTER_FAIL,
-    USER_REGISTER_REQUEST,
-    USER_REGISTER_SUCCESS,
+    USER_DETAILS_FAIL,
     USER_DETAILS_REQUEST,
     USER_DETAILS_SUCCESS,
-    USER_DETAILS_FAIL,
-    USER_UPDATE_SUCCESS,
-    USER_UPDATE_REQUEST,
     USER_DETAILS_RESET,
     USER_UPDATE_FAIL,
+    USER_UPDATE_SUCCESS,
+    USER_UPDATE_REQUEST,
 } from '../constant/userConstants';
 
 export const login = (email, password) => async (dispatch) => {
@@ -61,41 +66,6 @@ export const login = (email, password) => async (dispatch) => {
     } catch (error) {
         dispatch({
             type: USER_LOGIN_FAIL,
-            payload:
-                error.response && error.response.data.message
-                    ? error.response.data.message
-                    : error.message,
-        });
-    }
-};
-
-export const forgetPassword = (email, password) => async (dispatch) => {
-    try {
-        dispatch({
-            type: USER_EMAIL_AUTH_REQUEST,
-        });
-
-        const config = {
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        };
-
-        const { data } = await axios.put(
-            '/api/users/forgotPassword',
-            { email, password },
-            config
-        );
-
-        dispatch({
-            type: USER_EMAIL_AUTH_SUCCESS,
-            payload: data,
-        });
-
-        localStorage.setItem('userQuestion', JSON.stringify(data));
-    } catch (error) {
-        dispatch({
-            type: USER_EMAIL_AUTH_FAIL,
             payload:
                 error.response && error.response.data.message
                     ? error.response.data.message
@@ -327,6 +297,46 @@ export const authQuestion_3 = (email, answer) => async (dispatch) => {
     }
 };
 
+export const resetPassword = (email, password) => async (dispatch) => {
+    try {
+        dispatch({
+            type: USER_UPDATE_PASSWORD_REQUEST,
+        });
+
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        };
+
+        const { data } = await axios.put(
+            '/api/users/forgotPassword/resetPassword',
+            { email, password },
+            config
+        );
+
+        dispatch({
+            type: USER_UPDATE_PASSWORD_SUCCESS,
+            payload: data,
+        });
+        dispatch({ type: USER_EMAIL_AUTH_RESET });
+        dispatch({ type: USER_AUTHENTICATION_v1_RESET });
+        dispatch({ type: USER_AUTHENTICATION_v2_RESET });
+        dispatch({ type: USER_AUTHENTICATION_v3_RESET });
+        dispatch({ type: USER_UPDATE_PASSWORD_RESET });
+
+        localStorage.setItem('userUpdate', JSON.stringify(data));
+    } catch (error) {
+        dispatch({
+            type: USER_UPDATE_PASSWORD_FAIL,
+            payload:
+                error.response && error.response.data.message
+                    ? error.response.data.message
+                    : error.message,
+        });
+    }
+};
+
 export const listUsers = () => async (dispatch, getState) => {
     try {
         dispatch({
@@ -366,39 +376,7 @@ export const listUsers = () => async (dispatch, getState) => {
         });
     }
 };
-export const deleteUser = (id) => async (dispatch, getState) => {
-    try {
-        dispatch({
-            type: USER_DELETE_REQUEST,
-        });
 
-        const {
-            userLogin: { userInfo },
-        } = getState();
-
-        const config = {
-            headers: {
-                Authorization: `Bearer ${userInfo.token}`,
-            },
-        };
-
-        await axios.delete(`/api/users/${id}`, config);
-
-        dispatch({ type: USER_DELETE_SUCCESS });
-    } catch (error) {
-        const message =
-            error.response && error.response.data.message
-                ? error.response.data.message
-                : error.message;
-        if (message === 'Not authorized, token failed') {
-            dispatch(logout());
-        }
-        dispatch({
-            type: USER_DELETE_FAIL,
-            payload: message,
-        });
-    }
-};
 export const getUserDetails = (id) => async (dispatch, getState) => {
     try {
         dispatch({

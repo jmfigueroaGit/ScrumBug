@@ -1,10 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Col, Container, Form, Row } from 'react-bootstrap';
 import { Link, useHistory } from 'react-router-dom';
 import Controls from '../../components/controls/Control';
-import { useForm } from './useForm';
 import { useDispatch, useSelector } from 'react-redux';
-import { forgetPassword } from '../../actions/userActions';
+import { resetPassword } from '../../actions/userActions';
 import Message from '../../components/Message';
 import Loader from '../../components/Loader';
 const theme = {
@@ -49,47 +48,34 @@ const theme = {
 
 export const ChangePassword = (props) => {
     const history = useHistory();
-    const { values, inputChange } = props;
-
-    const validate = (fieldValues = values) => {
-        let temp = { ...errorMessage };
-        if ('password' in fieldValues)
-            temp.password =
-                fieldValues.password.length >= 6
-                    ? ''
-                    : 'Minimum of 6 numbers required.';
-        setError({
-            ...temp,
-        });
-        if ('confirmPassword' in fieldValues)
-            temp.confirmPassword =
-                fieldValues.confirmPassword.length > 3
-                    ? ''
-                    : 'Minimum of 6 numbers required.';
-        setError({
-            ...temp,
-        });
-
-        if (fieldValues === values)
-            return Object.values(temp).every((x) => x === '');
-    };
-
-    const userRegister = useSelector((state) => state.userRegister);
-    const { loading, error } = userRegister;
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [message, setMessage] = useState(null);
 
     const dispatch = useDispatch();
 
-    const { errorMessage, setError } = useForm(values, true, validate);
+    const userEmailAuth = useSelector((state) => state.userEmailAuth);
+    const { user } = userEmailAuth;
 
+    const userUpdatePassword = useSelector((state) => state.userUpdatePassword);
+    const { loading, error, userUpdate } = userUpdatePassword;
+
+    useEffect(() => {
+        if (userUpdate) {
+            history.push('/login');
+        }
+    }, [history, userUpdate]);
     const handleInput = (e) => {
         e.preventDefault();
-        if (validate()) {
-            if (values.password === values.confirmPassword) {
-                dispatch(forgetPassword(values.email, values.password));
-                history.push('/login');
-            }
+        if (password.length === 0 || confirmPassword.length === 0) {
+            setMessage('Please fill in required fields');
+        } else {
+            if (password === confirmPassword) {
+                dispatch(resetPassword(user.email, password));
+            } else setMessage('Please fill in required fields');
         }
     };
+
     return (
         <Form>
             {' '}
@@ -97,24 +83,31 @@ export const ChangePassword = (props) => {
                 <Row>
                     <Col style={theme.mainPanel}>
                         <h1 style={theme.text}>Credentials</h1>
-                        {error && <Message variant='danger'>{error}</Message>}
-                        {loading && <Loader />}
+                        <Container style={{ marginLeft: '-2rem' }}>
+                            {message && (
+                                <Message variant='danger'>{message}</Message>
+                            )}
+                            {error && (
+                                <Message variant='danger'>{error}</Message>
+                            )}
+                            {loading && <Loader />}
+                        </Container>
                         <Container style={theme.field}>
                             <Controls.Input
                                 label='Password'
                                 name='password'
-                                value={values.password}
-                                onChange={inputChange('password')}
                                 type='password'
-                                error={errorMessage.password}
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
                             />
                             <Controls.Input
                                 label='Confirm Password'
                                 name='password'
-                                value={values.confirmPassword}
-                                onChange={inputChange('confirmPassword')}
                                 type='password'
-                                error={errorMessage.confirmPassword}
+                                value={confirmPassword}
+                                onChange={(e) =>
+                                    setConfirmPassword(e.target.value)
+                                }
                             />
                             <Controls.Button
                                 type='submit'

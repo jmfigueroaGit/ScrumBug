@@ -112,6 +112,7 @@ const forgotPassword = asyncHandler(async (req, res, next) => {
         _id: user._id,
         fullName: user.fullName,
         email: user.email,
+        isActive: user.isActive,
     });
 });
 

@@ -9,15 +9,23 @@ import {
     USER_EMAIL_AUTH_REQUEST,
     USER_EMAIL_AUTH_SUCCESS,
     USER_EMAIL_AUTH_FAIL,
+    USER_EMAIL_AUTH_RESET,
     USER_AUTHENTICATION_v1_FAIL,
-    USER_AUTHENTICATION_v1_SUCCESS,
     USER_AUTHENTICATION_v1_REQUEST,
+    USER_AUTHENTICATION_v1_SUCCESS,
+    USER_AUTHENTICATION_v1_RESET,
     USER_AUTHENTICATION_v2_FAIL,
     USER_AUTHENTICATION_v2_SUCCESS,
     USER_AUTHENTICATION_v2_REQUEST,
+    USER_AUTHENTICATION_v2_RESET,
     USER_AUTHENTICATION_v3_FAIL,
     USER_AUTHENTICATION_v3_SUCCESS,
     USER_AUTHENTICATION_v3_REQUEST,
+    USER_AUTHENTICATION_v3_RESET,
+    USER_UPDATE_PASSWORD_FAIL,
+    USER_UPDATE_PASSWORD_SUCCESS,
+    USER_UPDATE_PASSWORD_REQUEST,
+    USER_UPDATE_PASSWORD_RESET,
     USER_LIST_REQUEST,
     USER_LIST_SUCCESS,
     USER_LIST_FAIL,
@@ -49,7 +57,18 @@ export const userLoginReducer = (state = {}, action) => {
             return state;
     }
 };
-
+export const userRegisterReducer = (state = {}, action) => {
+    switch (action.type) {
+        case USER_REGISTER_REQUEST:
+            return { loading: true };
+        case USER_REGISTER_SUCCESS:
+            return { loading: false, userInfo: action.payload };
+        case USER_REGISTER_FAIL:
+            return { loading: false, error: action.payload };
+        default:
+            return state;
+    }
+};
 export const userEmailAuthReducer = (state = {}, action) => {
     switch (action.type) {
         case USER_EMAIL_AUTH_REQUEST:
@@ -58,6 +77,8 @@ export const userEmailAuthReducer = (state = {}, action) => {
             return { loading: false, user: action.payload };
         case USER_EMAIL_AUTH_FAIL:
             return { loading: false, error: action.payload };
+        case USER_EMAIL_AUTH_RESET:
+            return { user: {} };
         default:
             return state;
     }
@@ -71,6 +92,8 @@ export const userAuthenticationReducer_v1 = (state = {}, action) => {
             return { loading: false, authentication_v1: action.payload };
         case USER_AUTHENTICATION_v1_FAIL:
             return { loading: false, error: action.payload };
+        case USER_AUTHENTICATION_v1_RESET:
+            return { user: {} };
         default:
             return state;
     }
@@ -84,6 +107,8 @@ export const userAuthenticationReducer_v2 = (state = {}, action) => {
             return { loading: false, authentication_v2: action.payload };
         case USER_AUTHENTICATION_v2_FAIL:
             return { loading: false, error: action.payload };
+        case USER_AUTHENTICATION_v2_RESET:
+            return { user: {} };
         default:
             return state;
     }
@@ -97,19 +122,27 @@ export const userAuthenticationReducer_v3 = (state = {}, action) => {
             return { loading: false, authentication_v3: action.payload };
         case USER_AUTHENTICATION_v3_FAIL:
             return { loading: false, error: action.payload };
+        case USER_AUTHENTICATION_v3_RESET:
+            return { user: {} };
         default:
             return state;
     }
 };
 
-export const userRegisterReducer = (state = {}, action) => {
+export const userUpdatePasswordReducer = (state = { user: {} }, action) => {
     switch (action.type) {
-        case USER_REGISTER_REQUEST:
+        case USER_UPDATE_PASSWORD_REQUEST:
             return { loading: true };
-        case USER_REGISTER_SUCCESS:
-            return { loading: false, userInfo: action.payload };
-        case USER_REGISTER_FAIL:
+        case USER_UPDATE_PASSWORD_SUCCESS:
+            return {
+                loading: false,
+                success: true,
+                userUpdate: action.payload,
+            };
+        case USER_UPDATE_PASSWORD_FAIL:
             return { loading: false, error: action.payload };
+        case USER_UPDATE_PASSWORD_RESET:
+            return { user: {} };
         default:
             return state;
     }
