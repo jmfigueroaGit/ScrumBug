@@ -11,10 +11,10 @@ const theme = {
         width: '60%',
         position: 'absolute',
         marginTop: '2.5rem',
-        marginLeft: '6rem',
+        marginLeft: '17rem',
     },
     field: {
-        marginTop: '3.5rem',
+        marginTop: '3.8rem',
     },
     controls: {
         marginTop: '2rem',
@@ -121,7 +121,7 @@ export const AccountSetup = (props) => {
                             Enter your personal details and start journey with
                             us
                         </p>
-                        <Link to='/login'>
+                        <Link to='/register/form'>
                             <Button
                                 variant='outline-info'
                                 style={{

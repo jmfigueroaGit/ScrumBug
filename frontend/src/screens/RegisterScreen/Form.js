@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import AccountSetup from './AccountSetup';
-import SecurityQuestion from './SecurityQuestion';
+import SecurityQuestion from './SecurityQuestion1';
 import Confirm from './Confirm';
 
 export class Form extends Component {
@@ -47,7 +47,6 @@ export class Form extends Component {
                         nextStep={this.nextStep}
                         inputChange={this.inputChange}
                         values={values}
-                        
                     />
                 );
             case 2:

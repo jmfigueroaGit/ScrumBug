@@ -30,3 +30,8 @@ dark-overlay {
     height: 100%;
     z-index: 1;
 }
+
+.list-group-item[aria-expanded='true'] {
+    background-color: black !important;
+    border-color: #aed248;
+}

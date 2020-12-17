@@ -25,6 +25,7 @@ const registerUser = asyncHandler(async (req, res, next) => {
     if (userExists) {
         return next(new ErrorResponse('User is already exist', 400));
     }
+
     const user = await User.create({
         fullName,
         email,
@@ -82,6 +83,7 @@ const loginUser = asyncHandler(async (req, res, next) => {
                     _id: user._id,
                     fullName: user.fullName,
                     email: user.email,
+                    isAdmin: user.isAdmin,
                     token: generateToken(user._id),
                 });
             } else {
@@ -120,24 +122,55 @@ const forgotPassword = asyncHandler(async (req, res, next) => {
 // @route   GET /api/users
 // @access  Private/Admin
 const getUsers = asyncHandler(async (req, res) => {
-    const users = await User.find({});
+    const users = await User.find({})
+        .select('-password')
+        .select('-question1')
+        .select('-question2')
+        .select('-question3')
+        .select('-answer1')
+        .select('-answer2')
+        .select('-answer3');
     res.json(users);
 });
 
 // @desc    Get user profile
 // @route   GET /api/users/:id
 // @access  Private
-const getUser = asyncHandler(async (req, res) => {
-    const user = await User.findById(req.user._id);
+const getUserById = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.params.id)
+        .select('-password')
+        .select('-question1')
+        .select('-question2')
+        .select('-question3')
+        .select('-answer1')
+        .select('-answer2')
+        .select('-answer3');
 
     if (user) {
+        res.json(user);
+    } else {
+        res.status(404);
+        throw new Error('User not found');
+    }
+});
+// @desc    Update user
+// @route   PUT /api/users/:id
+// @access  Private/Admin
+const updateUser = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.params.id);
+
+    if (user) {
+        user.fullName = req.body.fullName || user.fullName;
+        user.email = req.body.email || user.email;
+        user.isActive = req.body.isActive;
+
+        const updatedUser = await user.save();
+
         res.json({
-            _id: user._id,
-            fullName: user.fullName,
-            email: user.email,
-            question: user.question,
-            answer: user.answer,
-            isAdmin: user.isAdmin,
+            _id: updatedUser._id,
+            fullName: updatedUser.fullName,
+            email: updatedUser.email,
+            isActive: updatedUser.isActive,
         });
     } else {
         res.status(404);
@@ -145,4 +178,11 @@ const getUser = asyncHandler(async (req, res) => {
     }
 });
 
-export { registerUser, loginUser, forgotPassword, getUsers, getUser };
+export {
+    registerUser,
+    loginUser,
+    forgotPassword,
+    getUsers,
+    getUserById,
+    updateUser,
+};

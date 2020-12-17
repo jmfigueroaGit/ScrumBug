@@ -11,7 +11,7 @@ const theme = {
         width: '60%',
         position: 'absolute',
         marginTop: '2.5rem',
-        marginLeft: '6rem',
+        marginLeft: '17rem',
     },
     field: {
         marginTop: '3.5rem',
@@ -137,7 +137,7 @@ export const ChangePassword = (props) => {
                             Enter your personal details and start journey with
                             us
                         </p>
-                        <Link to={'/register'}>
+                        <Link to={'/register/form'}>
                             <Button
                                 variant='outline-info'
                                 style={{

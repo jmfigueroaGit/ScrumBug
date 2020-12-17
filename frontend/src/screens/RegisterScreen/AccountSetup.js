@@ -1,9 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Container, Form, Row } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { Col } from 'react-bootstrap';
 import Controls from '../../components/controls/Control';
-import { useForm } from './useForm';
 import { useDispatch, useSelector } from 'react-redux';
 import { registerAuth } from '../../actions/userActions';
 import Message from '../../components/Message';
@@ -14,13 +13,13 @@ const theme = {
         width: '60%',
         position: 'absolute',
         marginTop: '2.5rem',
-        marginLeft: '6rem',
+        marginLeft: '17rem',
     },
     field: {
-        marginTop: '3.5rem',
+        marginTop: '3rem',
     },
     controls: {
-        marginTop: '2rem',
+        marginTop: '1rem',
     },
     container: {
         marginLeft: '-.7rem',
@@ -49,48 +48,43 @@ const theme = {
     },
 };
 
-export const AccountSetup = (props) => {
-    const { values, inputChange } = props;
-    const validate = (fieldValues = values) => {
-        let temp = { ...errorMessage };
-        if ('fullName' in fieldValues)
-            temp.fullName = fieldValues.fullName
-                ? ''
-                : 'This field is required.';
-        if ('email' in fieldValues)
-            temp.email =
-                /$^|.+@.+..+/.test(fieldValues.email) && fieldValues.email
-                    ? ''
-                    : 'Email is not valid.';
-        if ('password' in fieldValues)
-            temp.password =
-                fieldValues.password.length > 3
-                    ? ''
-                    : 'Minimum of 11 numbers required.';
-        setError({
-            ...temp,
-        });
-
-        if (fieldValues === values)
-            return Object.values(temp).every((x) => x === '');
-    };
+export const AccountSetup = () => {
+    const history = useHistory();
+    const [fullName, setFullName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [message, setMessage] = useState(null);
 
     const userRegister = useSelector((state) => state.userRegister);
-    const { loading, error } = userRegister;
+    const { loading, error, userInfo } = userRegister;
 
     const dispatch = useDispatch();
 
-    const { errorMessage, setError } = useForm(values, true, validate);
+    useEffect(() => {
+        if (userInfo) {
+            history.push('/register/security-question-v1');
+        }
+    }, [history, userInfo]);
 
     const handleInput = (e) => {
         e.preventDefault();
-        if (validate()) {
-            dispatch(registerAuth(values.email, props));
+        if (
+            email.length === 0 ||
+            fullName.length === 0 ||
+            password.length === 0 ||
+            confirmPassword.length === 0
+        ) {
+            setMessage('Please fill in required fields');
+        } else {
+            if (password === confirmPassword)
+                dispatch(registerAuth(fullName, email, password));
+            else setMessage('Password mismatch');
         }
     };
+
     return (
         <Form>
-            {' '}
             <Container style={theme.root}>
                 <Row>
                     <Col style={theme.sidePanel}>
@@ -131,60 +125,47 @@ export const AccountSetup = (props) => {
                     </Col>
                     <Col style={theme.mainPanel}>
                         <h1 style={theme.text}>Credentials</h1>
-                        <Container style={theme.container}>
-                            {error && (
-                                <Message variant='danger'>{error}</Message>
-                            )}
-                            {loading && <Loader />}
-                        </Container>
-
+                        {message && (
+                            <Message variant='danger'>{message}</Message>
+                        )}
+                        {error && <Message variant='danger'>{error}</Message>}
+                        {loading && <Loader />}
                         <Container style={theme.field}>
                             <Controls.Input
                                 label='Full Name'
                                 name='fullName'
-                                value={values.fullName}
-                                onChange={inputChange('fullName')}
-                                error={errorMessage.fullName}
+                                value={fullName}
+                                onChange={(e) => setFullName(e.target.value)}
                             />
                             <Controls.Input
                                 label='Email'
                                 name='email'
-                                value={values.email}
-                                onChange={inputChange('email')}
-                                error={errorMessage.email}
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
                             />
                             <Controls.Input
                                 label='Password'
                                 name='password'
-                                value={values.password}
-                                onChange={inputChange('password')}
                                 type='password'
-                                error={errorMessage.password}
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
+                            <Controls.Input
+                                label='Confirm Password'
+                                name='password'
+                                type='password'
+                                value={confirmPassword}
+                                onChange={(e) =>
+                                    setConfirmPassword(e.target.value)
+                                }
                             />
                             <Controls.Button
                                 type='submit'
                                 text='Submit'
-                                onClick={handleInput}
                                 style={theme.controls}
+                                onClick={handleInput}
                             />
                         </Container>
-                        <Col
-                            style={{
-                                color: 'black',
-                                textAlign: 'center',
-                            }}
-                        >
-                            Already have an account?{' '}
-                            <Link
-                                to={'/login'}
-                                style={{
-                                    color: 'blue',
-                                    textDecoration: 'underline',
-                                }}
-                            >
-                                Login
-                            </Link>
-                        </Col>
                     </Col>
                 </Row>
             </Container>

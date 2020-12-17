@@ -13,6 +13,13 @@ import {
     userDetailsReducer,
     userUpdateReducer,
 } from './reducers/userReducers';
+import {
+    movieListReducer,
+    movieAddReducer,
+    movieUpdateReducer,
+    movieDeleteReducer,
+} from './reducers/movieReducers';
+
 const reducer = combineReducers({
     userLogin: userLoginReducer,
     userRegister: userRegisterReducer,
@@ -24,14 +31,22 @@ const reducer = combineReducers({
     userList: userListReducer,
     userDetails: userDetailsReducer,
     userUpdate: userUpdateReducer,
+    movieList: movieListReducer,
+    movieAdd: movieAddReducer,
+    movieUpdate: movieUpdateReducer,
+    movieDelete: movieDeleteReducer,
 });
 
 const userInfoFromStorage = localStorage.getItem('userInfo')
     ? JSON.parse(localStorage.getItem('userInfo'))
     : null;
+const movieInfoFromStorage = localStorage.getItem('movieInfo')
+    ? JSON.parse(localStorage.getItem('movieInfo'))
+    : null;
 
 const initialState = {
     userLogin: { userInfo: userInfoFromStorage },
+    movieList: { movieInfo: movieInfoFromStorage },
 };
 
 const middleware = [thunk];

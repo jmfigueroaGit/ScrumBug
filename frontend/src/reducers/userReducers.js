@@ -41,6 +41,21 @@ import {
     USER_UPDATE_SUCCESS,
     USER_UPDATE_FAIL,
     USER_UPDATE_RESET,
+    MOVIE_LIST_REQUEST,
+    MOVIE_LIST_SUCCESS,
+    MOVIE_LIST_FAIL,
+    MOVIE_ADD_REQUEST,
+    MOVIE_ADD_SUCCESS,
+    MOVIE_ADD_FAIL,
+    MOVIE_ADD_RESET,
+    MOVIE_UPDATE_REQUEST,
+    MOVIE_UPDATE_SUCCESS,
+    MOVIE_UPDATE_FAIL,
+    MOVIE_UPDATE_RESET,
+    MOVIE_DELETE_REQUEST,
+    MOVIE_DELETE_SUCCESS,
+    MOVIE_DELETE_FAIL,
+    MOVIE_DELETE_RESET,
 } from '../constant/userConstants';
 
 export const userLoginReducer = (state = {}, action) => {
@@ -207,3 +222,4 @@ export const userUpdateReducer = (state = { user: {} }, action) => {
             return state;
     }
 };
+

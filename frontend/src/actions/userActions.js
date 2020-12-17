@@ -37,6 +37,21 @@ import {
     USER_UPDATE_FAIL,
     USER_UPDATE_SUCCESS,
     USER_UPDATE_REQUEST,
+    MOVIE_LIST_REQUEST,
+    MOVIE_LIST_SUCCESS,
+    MOVIE_LIST_FAIL,
+    MOVIE_ADD_REQUEST,
+    MOVIE_ADD_SUCCESS,
+    MOVIE_ADD_FAIL,
+    MOVIE_ADD_RESET,
+    MOVIE_UPDATE_REQUEST,
+    MOVIE_UPDATE_SUCCESS,
+    MOVIE_UPDATE_FAIL,
+    MOVIE_UPDATE_RESET,
+    MOVIE_DELETE_REQUEST,
+    MOVIE_DELETE_SUCCESS,
+    MOVIE_DELETE_FAIL,
+    MOVIE_DELETE_RESET,
 } from '../constant/userConstants';
 
 export const login = (email, password) => async (dispatch) => {
@@ -95,7 +110,7 @@ export const register = (fullName, email, password, question, answer) => async (
         };
 
         const { data } = await axios.post(
-            'api/users',
+            '/api/users/register',
             { fullName, email, password, question, answer },
             config
         );
@@ -122,7 +137,7 @@ export const register = (fullName, email, password, question, answer) => async (
     }
 };
 
-export const registerAuth = (email, props) => async (dispatch) => {
+export const registerAuth = (fullName, email, password) => async (dispatch) => {
     try {
         dispatch({
             type: USER_REGISTER_REQUEST,
@@ -135,17 +150,16 @@ export const registerAuth = (email, props) => async (dispatch) => {
         };
 
         const { data } = await axios.post(
-            'api/users/register/auth',
-            { email },
+            '/api/users/auth',
+            { fullName, email, password },
             config
         );
-
         dispatch({
             type: USER_REGISTER_SUCCESS,
+            payload: data,
         });
 
-        localStorage.setItem('user', JSON.stringify(data));
-        props.nextStep();
+        localStorage.setItem('userInfo', JSON.stringify(data));
     } catch (error) {
         dispatch({
             type: USER_REGISTER_FAIL,
@@ -180,7 +194,7 @@ export const findUserAuth = (email) => async (dispatch) => {
             payload: data,
         });
 
-        localStorage.setItem('user', JSON.stringify(data));
+        localStorage.setItem('userInfo', JSON.stringify(data));
     } catch (error) {
         dispatch({
             type: USER_EMAIL_AUTH_FAIL,
@@ -205,7 +219,7 @@ export const authQuestion_1 = (email, answer) => async (dispatch) => {
         };
 
         const { data } = await axios.post(
-            'api/users/forgotPassword/auth/v1',
+            '/api/users/forgotPassword/auth/v1',
             { email, answer },
             config
         );
@@ -240,7 +254,7 @@ export const authQuestion_2 = (email, answer) => async (dispatch) => {
         };
 
         const { data } = await axios.post(
-            'api/users/forgotPassword/auth/v2',
+            '/api/users/forgotPassword/auth/v2',
             { email, answer },
             config
         );
@@ -275,7 +289,7 @@ export const authQuestion_3 = (email, answer) => async (dispatch) => {
         };
 
         const { data } = await axios.post(
-            'api/users/forgotPassword/auth/v3',
+            '/api/users/forgotPassword/auth/v3',
             { email, answer },
             config
         );
@@ -453,6 +467,160 @@ export const updateUser = (user) => async (dispatch, getState) => {
         dispatch({
             type: USER_UPDATE_FAIL,
             payload: message,
+        });
+    }
+};
+
+export const securityQuestion1 = (
+    fullName,
+    email,
+    password,
+    question1,
+    answer1
+) => async (dispatch) => {
+    try {
+        dispatch({
+            type: USER_AUTHENTICATION_v1_REQUEST,
+        });
+
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        };
+
+        const { data } = await axios.post(
+            '/api/users/auth/v1',
+            { fullName, email, password, question1, answer1 },
+            config
+        );
+
+        dispatch({
+            type: USER_AUTHENTICATION_v1_SUCCESS,
+            payload: data,
+        });
+
+        localStorage.setItem('authentication_v1', JSON.stringify(data));
+    } catch (error) {
+        dispatch({
+            type: USER_AUTHENTICATION_v1_FAIL,
+            payload:
+                error.response && error.response.data.message
+                    ? error.response.data.message
+                    : error.message,
+        });
+    }
+};
+
+export const securityQuestion2 = (
+    fullName,
+    email,
+    password,
+    question1,
+    answer1,
+    question2,
+    answer2
+) => async (dispatch) => {
+    try {
+        dispatch({
+            type: USER_AUTHENTICATION_v2_REQUEST,
+        });
+
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        };
+
+        const { data } = await axios.post(
+            '/api/users/auth/v2',
+            {
+                fullName,
+                email,
+                password,
+                question1,
+                answer1,
+                question2,
+                answer2,
+            },
+            config
+        );
+
+        dispatch({
+            type: USER_AUTHENTICATION_v2_SUCCESS,
+            payload: data,
+        });
+
+        localStorage.setItem('authentication_v2', JSON.stringify(data));
+    } catch (error) {
+        dispatch({
+            type: USER_AUTHENTICATION_v2_FAIL,
+            payload:
+                error.response && error.response.data.message
+                    ? error.response.data.message
+                    : error.message,
+        });
+    }
+};
+
+export const securityQuestion3 = (
+    fullName,
+    email,
+    password,
+    question1,
+    answer1,
+    question2,
+    answer2,
+    question3,
+    answer3
+) => async (dispatch) => {
+    try {
+        dispatch({
+            type: USER_AUTHENTICATION_v3_REQUEST,
+        });
+
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        };
+
+        const { data } = await axios.post(
+            '/api/users/auth/v3',
+            {
+                fullName,
+                email,
+                password,
+                question1,
+                answer1,
+                question2,
+                answer2,
+                question3,
+                answer3,
+            },
+            config
+        );
+
+        dispatch({
+            type: USER_AUTHENTICATION_v3_SUCCESS,
+            payload: data,
+        });
+
+        dispatch({ type: USER_AUTHENTICATION_v1_RESET });
+        dispatch({ type: USER_AUTHENTICATION_v2_RESET });
+        dispatch({ type: USER_AUTHENTICATION_v3_RESET });
+        localStorage.removeItem('userInfo');
+        document.location.href = '/login';
+        dispatch({ type: USER_LIST_RESET });
+
+        localStorage.setItem('authentication_v3', JSON.stringify(data));
+    } catch (error) {
+        dispatch({
+            type: USER_AUTHENTICATION_v3_FAIL,
+            payload:
+                error.response && error.response.data.message
+                    ? error.response.data.message
+                    : error.message,
         });
     }
 };

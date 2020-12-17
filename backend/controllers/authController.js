@@ -95,7 +95,7 @@ const auth3 = asyncHandler(async (req, res, next) => {
 // @route   POST /api/check
 // @access  Public
 const checkUser = asyncHandler(async (req, res) => {
-    const { email } = req.body;
+    const { fullName, email, password } = req.body;
 
     const userExists = await User.findOne({ email });
 
@@ -103,9 +103,129 @@ const checkUser = asyncHandler(async (req, res) => {
         res.status(400);
         throw new Error('User already exists');
     } else {
-        res.status(200);
-        res.json('Hello');
+        res.status(200).json({
+            fullName: fullName,
+            email: email,
+            password: password,
+        });
     }
 });
 
-export { findUser, auth1, auth2, auth3, checkUser };
+// @desc    GET Security Auth 1
+// @route   POST /api/v1
+// @access  Public
+const registerAuth1 = asyncHandler(async (req, res, next) => {
+    const { fullName, email, password, question1, answer1 } = req.body;
+
+    const user = await User.findOne({ email: email });
+
+    if (user) {
+        return next(new ErrorResponse(`Email is already used`, 401));
+    } else {
+        res.status(200).json({
+            success: true,
+            fullName,
+            email,
+            password,
+            question1,
+            answer1,
+        });
+    }
+});
+
+// @desc    GET Security Auth 2
+// @route   POST /api/v2
+// @access  Public
+const registerAuth2 = asyncHandler(async (req, res, next) => {
+    const {
+        fullName,
+        email,
+        password,
+        question1,
+        answer1,
+        question2,
+        answer2,
+    } = req.body;
+
+    const user = await User.findOne({ email: email });
+
+    if (user) {
+        return next(new ErrorResponse(`Email is already used`, 401));
+    } else {
+        res.status(200).json({
+            success: true,
+            fullName,
+            email,
+            password,
+            question1,
+            answer1,
+            question2,
+            answer2,
+        });
+    }
+});
+
+// @desc    GET Security Auth 3
+// @route   POST /api/v3
+// @access  Public
+const registerAuth3 = asyncHandler(async (req, res, next) => {
+    const {
+        fullName,
+        email,
+        password,
+        question1,
+        answer1,
+        question2,
+        answer2,
+        question3,
+        answer3,
+    } = req.body;
+
+    const userExists = await User.findOne({ email });
+
+    if (userExists) {
+        return next(new ErrorResponse('User is already exist', 400));
+    }
+
+    const user = await User.create({
+        fullName,
+        email,
+        password,
+        question1,
+        answer1,
+        question2,
+        answer2,
+        question3,
+        answer3,
+    });
+
+    if (user) {
+        res.status(201).json({
+            _id: user._id,
+            fullName: user.fullName,
+            email: user.email,
+            question1: user.question1,
+            answer1: user.answer1,
+            question2: user.question2,
+            answer2: user.answer2,
+            question3: user.question3,
+            answer3: user.answer3,
+            isAdmin: user.isAdmin,
+            token: generateToken(user._id),
+        });
+    } else {
+        res.status(400);
+        throw new Error('Invalid user data');
+    }
+});
+
+export {
+    findUser,
+    auth1,
+    auth2,
+    auth3,
+    checkUser,
+    registerAuth1,
+    registerAuth2,
+    registerAuth3,
+};

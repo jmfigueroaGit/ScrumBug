@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
 import { login } from '../actions/userActions';
+import { listMovies } from '../actions/movieAction';
 import Controls from '../components/controls/Control';
 import { useHistory, useLocation } from 'react-router-dom';
 const theme = {
@@ -12,7 +13,7 @@ const theme = {
         width: '60%',
         position: 'absolute',
         marginTop: '2.5rem',
-        marginLeft: '6rem',
+        marginLeft: '17rem',
     },
     field: {
         marginTop: '3.5rem',
@@ -63,7 +64,11 @@ const LoginScreen = (props) => {
 
     useEffect(() => {
         if (userInfo) {
-            history.push(redirect);
+            if (userInfo.isAdmin) {
+                history.push('admin/dashboard');
+            } else {
+                history.push(redirect);
+            }
         }
     }, [history, userInfo, redirect]);
 
@@ -72,6 +77,7 @@ const LoginScreen = (props) => {
         if (email.length === 0 || password.length === 0) {
             setMessage('Please fill in required fields');
         } else {
+            dispatch(listMovies());
             dispatch(login(email, password));
         }
     };
@@ -93,6 +99,7 @@ const LoginScreen = (props) => {
                             name='email'
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
+                            fullWidth
                         />
                         <Controls.Input
                             label='Password'
@@ -100,6 +107,7 @@ const LoginScreen = (props) => {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             type='password'
+                            fullWidth
                         />
                         <Controls.Button
                             type='submit'
@@ -141,13 +149,7 @@ const LoginScreen = (props) => {
                     >
                         Enter your personal details and start journey with us
                     </p>
-                    <Link
-                        to={
-                            redirect
-                                ? `/register?redirect=${redirect}`
-                                : '/register'
-                        }
-                    >
+                    <Link to='/register/form'>
                         <Button
                             variant='outline-info'
                             style={{

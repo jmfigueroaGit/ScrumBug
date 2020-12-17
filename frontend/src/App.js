@@ -11,9 +11,15 @@ import Authentication2 from './screens/ForgetPasswordScreen/Authentication_2';
 import Authentication3 from './screens/ForgetPasswordScreen/Authentication_3';
 import ResetPassword from './screens/ForgetPasswordScreen/ChangePassword';
 import Footer from './components/Footer';
-import Form from './screens/RegisterScreen/Form';
-import UserListScreen from './screens/UserListScreen';
-import UserEditScreen from './screens/UserEditScreen';
+import RegisterForm from './screens/RegisterScreen/AccountSetup';
+import SecurityAuth1 from './screens/RegisterScreen/SecurityQuestion1';
+import SecurityAuth2 from './screens/RegisterScreen/SecurityQuestion2';
+import SecurityAuth3 from './screens/RegisterScreen/SecurityQuestion3';
+import AdminDashboard from './screens/AdminScreen/AdminDashboard';
+import UserListScreen from './screens/AdminScreen/UserListScreen';
+import UserEditScreen from './screens/AdminScreen/UserEditScreen';
+import AdminMovies from './screens/AdminScreen/AdminMovies';
+import AdminAddMovie from './screens/AdminScreen/AdminAddMovie';
 
 const App = () => {
     return (
@@ -21,7 +27,8 @@ const App = () => {
             <Header />
             <main
                 style={{
-                    backgroundImage: `linear-gradient(to top, transparent 1%,transparent 0%,black 95%,black 100%), url("images/bg.gif")`,
+                    //  backgroundImage: `linear-gradient(to top, transparent 1%,transparent 0%,black 95%,black 100%), url("images/bg.gif")`,
+                    backgroundColor: '#333333',
                     width: '100%',
                     height: '100vh',
                     backgroundPosition: 'top',
@@ -29,10 +36,21 @@ const App = () => {
                     backgroundRepeat: 'no-repeat',
                 }}
             >
-                <Container>
+                <Container fluid>
                     <Route path='/login' component={LoginScreen} />
-                    <Route path='/register' component={Form} />
-
+                    <Route path='/register/form' component={RegisterForm} />
+                    <Route
+                        path='/register/security-question-v1'
+                        component={SecurityAuth1}
+                    />
+                    <Route
+                        path='/register/security-question-v2'
+                        component={SecurityAuth2}
+                    />
+                    <Route
+                        path='/register/security-question-v3'
+                        component={SecurityAuth3}
+                    />
                     <Route path='/forgotPassword' component={EmailAuth} />
                     <Route
                         path='/authentication-1'
@@ -47,13 +65,16 @@ const App = () => {
                         component={Authentication3}
                     />
                     <Route path='/resetPassword' component={ResetPassword} />
-
                     <Route path='/home' component={HomeScreen} exact />
+
+                    <Route path='/admin/dashboard' component={AdminDashboard} />
                     <Route path='/admin/userlist' component={UserListScreen} />
                     <Route
                         path='/admin/user/:id/edit'
                         component={UserEditScreen}
                     />
+                    <Route path='/admin/movies' component={AdminMovies} />
+                    <Route path='/admin/add-movie' component={AdminAddMovie} />
                 </Container>
             </main>
             <Footer />

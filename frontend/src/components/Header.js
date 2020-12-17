@@ -36,16 +36,22 @@ const Header = () => {
                                         title={userInfo.fullName}
                                         id='username'
                                     >
-                                        <LinkContainer to='/profile'>
-                                            <NavDropdown.Item>
-                                                Profile
-                                            </NavDropdown.Item>
-                                        </LinkContainer>
-                                        <NavDropdown.Item
-                                            onClick={logoutHandler}
+                                        <div
+                                            style={{
+                                                borderBottom: 'solid .1px',
+                                            }}
                                         >
-                                            Logout
-                                        </NavDropdown.Item>
+                                            <LinkContainer to='/profile'>
+                                                <NavDropdown.Item>
+                                                    Profile
+                                                </NavDropdown.Item>
+                                            </LinkContainer>
+                                            <NavDropdown.Item
+                                                onClick={logoutHandler}
+                                            >
+                                                Logout
+                                            </NavDropdown.Item>
+                                        </div>
                                     </NavDropdown>
                                 ) : (
                                     <LinkContainer to='/login'>
@@ -54,15 +60,6 @@ const Header = () => {
                                             In
                                         </Nav.Link>
                                     </LinkContainer>
-                                )}
-                                {userInfo && userInfo.isAdmin && (
-                                    <NavDropdown title='Admin' id='adminmenu'>
-                                        <LinkContainer to='/admin/userlist'>
-                                            <NavDropdown.Item>
-                                                Users
-                                            </NavDropdown.Item>
-                                        </LinkContainer>
-                                    </NavDropdown>
                                 )}
                             </Nav>
                         </Navbar.Collapse>

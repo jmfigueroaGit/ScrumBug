@@ -14,7 +14,7 @@ const theme = {
         width: '60%',
         position: 'absolute',
         marginTop: '2.5rem',
-        marginLeft: '22rem',
+        marginLeft: '33rem',
     },
     field: {
         marginTop: '5rem',
