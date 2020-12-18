@@ -1,13 +1,24 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Link, Redirect } from 'react-router-dom';
-import { Table, Button, Row, Col, ListGroup, Container } from 'react-bootstrap';
+import {
+    Button,
+    Row,
+    Col,
+    ListGroup,
+    Container,
+    Form as FormContainer,
+    Image,
+} from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../../components/Message';
 import Loader from '../../components/Loader';
-import { listMovies, deleteMovie } from '../../actions/movieAction';
+import { listMovies, addMovie, addPoster } from '../../actions/movieAction';
 import { Form } from '../RegisterScreen/useForm';
-
+import Controls from '../../components/controls/Control';
+import FileUpload from './FileUpload.js';
+import moment from 'moment';
+import { MOVIE_ADD_SUCCESS } from '../../constant/movieConstants';
 const theme = {
     field: {
         marginTop: '5rem',
@@ -68,38 +79,127 @@ const theme = {
         paddingLeft: '23px',
         fontWeight: '900',
     },
+    input: {
+        fontSize: '12px',
+        margin: '0',
+        padding: '0',
+    },
+    fixed: {
+        margin: '0',
+        padding: '0',
+    },
 };
 
 const AdminMovies = ({ history }) => {
+    const [movieTitle, setMovieTitle] = useState('');
+    const [genre, setGenre] = useState('');
+    const [mainCast, setMainCast] = useState('');
+    const [director, setDirector] = useState('');
+    const [language, setLanguage] = useState('');
+    const [rating, setRating] = useState('');
+    const [cinemaNumber, setCinemaNumber] = useState('');
+    const [release, setRelease] = useState('');
+    const [endScreening, setEndScreening] = useState('');
+    const [startTime, setStartTime] = useState('');
+    const [endTime, setEndTime] = useState('');
+    const [poster, setPoster] = useState('');
+    const [message, setMessage] = useState(null);
+    let [duration] = useState('');
     const dispatch = useDispatch();
-    const userList = useSelector((state) => state.userList);
-    const { loading, error, users } = userList;
 
     const userLogin = useSelector((state) => state.userLogin);
     const { userInfo } = userLogin;
 
     const movieList = useSelector((state) => state.movieList);
-    const { moviesList } = movieList;
 
-    useEffect(() => {
-        if (userInfo) {
-            dispatch(listMovies());
+    const movieAdded = useSelector((state) => state.movieAdd);
+    const { loading, error, movieInfo } = movieAdded;
+
+    const releaseDate = moment(release, 'YYYY-MM-DD').format('YYYY-MM-DD');
+    const endDate = moment(endScreening, 'YYYY-MM-DD');
+
+    const movieStart = moment(startTime, 'LT');
+    const movieEnd = moment(endTime, 'LT');
+
+    duration = movieEnd.diff(movieStart, 'minutes');
+    let weeks = endDate.diff(releaseDate, 'YYYY-MM-DD');
+    let today = moment().add(4, 'weeks').format('YYYY-MM-DD');
+    let after = moment(releaseDate).isAfter(today);
+
+    let status = '';
+
+    const submit = (e) => {
+        e.preventDefault();
+
+        if (
+            movieTitle.length === 0 ||
+            genre.length === 0 ||
+            mainCast.length === 0 ||
+            director.length === 0 ||
+            language.length === 0 ||
+            rating.length === 0 ||
+            cinemaNumber.length === 0 ||
+            release.length === 0 ||
+            poster.length === 0 ||
+            endScreening.length === 0 ||
+            startTime.length === 0 ||
+            endTime.length === 0
+        ) {
+            setMessage('Please fill in required fields');
         } else {
-            history.push('/login');
-        }
-    }, [dispatch, history, userInfo]);
-    // const editHandler = (id) => {
-    //     dispatch(getUserDetails(id));
-    //     history.push(`/admin/user/${id}/edit`);
-    // };
-
-    const deleteHandler = (id) => {
-        if (window.confirm('Are you sure')) {
-            history.push('/login');
-            dispatch(deleteMovie(id));
+            if (after) {
+                status = 'Coming Soon';
+                console.log(releaseDate);
+                console.log(today);
+                console.log(status);
+                dispatch(
+                    addMovie(
+                        movieTitle,
+                        genre,
+                        mainCast,
+                        director,
+                        poster,
+                        language,
+                        rating,
+                        cinemaNumber,
+                        release,
+                        endScreening,
+                        startTime,
+                        endTime,
+                        duration,
+                        status
+                    )
+                );
+                dispatch(listMovies());
+                history.push('/admin/dashboard');
+            } else {
+                status = 'Now Showing';
+                console.log(releaseDate);
+                console.log(today);
+                console.log(status);
+                dispatch(
+                    addMovie(
+                        movieTitle,
+                        genre,
+                        mainCast,
+                        director,
+                        poster,
+                        language,
+                        rating,
+                        cinemaNumber,
+                        release,
+                        endScreening,
+                        startTime,
+                        endTime,
+                        duration,
+                        status
+                    )
+                );
+                dispatch(listMovies());
+                history.push('/admin/dashboard');
+            }
         }
     };
-
     return (
         <div style={theme.root}>
             {userInfo ? (
@@ -184,80 +284,348 @@ const AdminMovies = ({ history }) => {
                                                 style={{ marginTop: '1.2rem' }}
                                             >
                                                 <LinkContainer
-                                                    to={`/admin/user/movie/add`}
+                                                    to={`/admin/movies`}
                                                 >
                                                     <Button
                                                         variant='danger'
                                                         className='btn-sm'
                                                     >
-                                                        Add Movies
+                                                        Back
                                                     </Button>
                                                 </LinkContainer>
                                             </Col>
                                         </Row>
                                     </Container>
-
+                                    <div style={{ marginLeft: '18.5rem' }}>
+                                        {message && (
+                                            <Message variant='danger'>
+                                                {message}
+                                            </Message>
+                                        )}
+                                        {error && (
+                                            <Message variant='danger'>
+                                                {error}
+                                            </Message>
+                                        )}
+                                    </div>
                                     {loading ? (
                                         <Loader />
-                                    ) : error ? (
-                                        <Message variant='danger'>
-                                            {error}
-                                        </Message>
                                     ) : (
-                                        <Table
-                                            striped
-                                            bordered
-                                            hover
-                                            responsive
-                                            className='table-sm '
-                                            style={theme.text}
+                                        <Container
+                                            style={{ paddingTop: '5rem' }}
                                         >
-                                            <thead>
-                                                <tr>
-                                                    <th>TITLE</th>
-                                                    <th>GENRE</th>
-                                                    <th>DIRECTOR</th>
-                                                    <th>EDIT MOVIE</th>
-                                                    <th>DELETE MOVIE</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {moviesList?.map((movie) => (
-                                                    <tr key={movie._id}>
-                                                        <td>{movie.title}</td>
-                                                        <td>{movie.genre}</td>
-                                                        <td>
-                                                            {movie.director}
-                                                        </td>
-                                                        <td>
-                                                            <LinkContainer
-                                                                to={`/admin/user/${movie._id}/edit`}
-                                                            >
-                                                                <Button
-                                                                    variant='light'
-                                                                    className='btn-sm'
-                                                                >
-                                                                    <i className='fas fa-edit'></i>
-                                                                </Button>
-                                                            </LinkContainer>
-                                                        </td>
-                                                        <td>
-                                                            <Button
-                                                                variant='danger'
-                                                                className='btn-sm'
-                                                                onClick={() =>
-                                                                    deleteHandler(
-                                                                        movie._id
+                                            <Row
+                                                style={
+                                                    {
+                                                        // marginLeft: '6rem',
+                                                        // paddingRight: '9rem',
+                                                    }
+                                                }
+                                            >
+                                                <Col md={3}>
+                                                    <div style={theme.fixed}>
+                                                        <label
+                                                            style={theme.input}
+                                                        >
+                                                            Movie Title
+                                                        </label>
+                                                        <div
+                                                            style={theme.fixed}
+                                                        >
+                                                            <Controls.Input
+                                                                label='Movie Title'
+                                                                name='movieTitle'
+                                                                value={
+                                                                    movieTitle
+                                                                }
+                                                                onChange={(e) =>
+                                                                    setMovieTitle(
+                                                                        e.target
+                                                                            .value
                                                                     )
                                                                 }
-                                                            >
-                                                                <i className='fas fa-trash'></i>
-                                                            </Button>
-                                                        </td>
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        </Table>
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <div style={theme.fixed}>
+                                                        <label
+                                                            style={theme.input}
+                                                        >
+                                                            Genre
+                                                        </label>
+                                                        <div
+                                                            style={theme.fixed}
+                                                        >
+                                                            <Controls.Input
+                                                                label='Genre'
+                                                                name='genre'
+                                                                value={genre}
+                                                                onChange={(e) =>
+                                                                    setGenre(
+                                                                        e.target
+                                                                            .value
+                                                                    )
+                                                                }
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <div style={theme.fixed}>
+                                                        <label
+                                                            style={theme.input}
+                                                        >
+                                                            Main Cast
+                                                        </label>
+                                                        <div
+                                                            style={theme.fixed}
+                                                        >
+                                                            <Controls.Input
+                                                                label='Main Cast'
+                                                                name='mainCast'
+                                                                value={mainCast}
+                                                                onChange={(e) =>
+                                                                    setMainCast(
+                                                                        e.target
+                                                                            .value
+                                                                    )
+                                                                }
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <div style={theme.fixed}>
+                                                        <label
+                                                            style={theme.input}
+                                                        >
+                                                            Director
+                                                        </label>
+                                                        <div
+                                                            style={theme.fixed}
+                                                        >
+                                                            <Controls.Input
+                                                                label='Director'
+                                                                name='director'
+                                                                value={director}
+                                                                onChange={(e) =>
+                                                                    setDirector(
+                                                                        e.target
+                                                                            .value
+                                                                    )
+                                                                }
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </Col>
+
+                                                <Col md={3}>
+                                                    <div style={theme.fixed}>
+                                                        <label
+                                                            style={theme.input}
+                                                        >
+                                                            Language
+                                                        </label>
+                                                        <div
+                                                            style={theme.fixed}
+                                                        >
+                                                            <Controls.Input
+                                                                label='Language'
+                                                                name='language'
+                                                                value={language}
+                                                                onChange={(e) =>
+                                                                    setLanguage(
+                                                                        e.target
+                                                                            .value
+                                                                    )
+                                                                }
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <div style={theme.fixed}>
+                                                        <label
+                                                            style={theme.input}
+                                                        >
+                                                            Rating
+                                                        </label>
+                                                        <div
+                                                            style={theme.fixed}
+                                                        >
+                                                            <Controls.Input
+                                                                label='Rating'
+                                                                name='rating'
+                                                                type='name'
+                                                                value={rating}
+                                                                onChange={(e) =>
+                                                                    setRating(
+                                                                        e.target
+                                                                            .value
+                                                                    )
+                                                                }
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <div style={theme.fixed}>
+                                                        <label
+                                                            style={theme.input}
+                                                        >
+                                                            Start Screening
+                                                        </label>
+                                                        <div
+                                                            style={theme.fixed}
+                                                        >
+                                                            <Controls.Input
+                                                                type='date'
+                                                                value={release}
+                                                                onChange={(e) =>
+                                                                    setRelease(
+                                                                        e.target
+                                                                            .value
+                                                                    )
+                                                                }
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <div style={theme.fixed}>
+                                                        <label
+                                                            style={theme.input}
+                                                        >
+                                                            End Screening
+                                                        </label>
+                                                        <div
+                                                            style={theme.fixed}
+                                                        >
+                                                            <Controls.Input
+                                                                type='date'
+                                                                value={
+                                                                    endScreening
+                                                                }
+                                                                onChange={(e) =>
+                                                                    setEndScreening(
+                                                                        e.target
+                                                                            .value
+                                                                    )
+                                                                }
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </Col>
+                                                <Col md={3}>
+                                                    <div style={theme.fixed}>
+                                                        <label
+                                                            style={theme.input}
+                                                        >
+                                                            Cinema Number
+                                                        </label>
+                                                        <div
+                                                            style={theme.fixed}
+                                                        >
+                                                            <Controls.Input
+                                                                label='Cinema Number'
+                                                                name='fullName'
+                                                                value={
+                                                                    cinemaNumber
+                                                                }
+                                                                onChange={(e) =>
+                                                                    setCinemaNumber(
+                                                                        e.target
+                                                                            .value
+                                                                    )
+                                                                }
+                                                            />
+                                                        </div>
+                                                    </div>
+
+                                                    <div style={theme.fixed}>
+                                                        <label
+                                                            style={theme.input}
+                                                        >
+                                                            Start Time
+                                                        </label>
+                                                        <div
+                                                            style={theme.fixed}
+                                                        >
+                                                            <Controls.Input
+                                                                name='startTime'
+                                                                type='time'
+                                                                value={
+                                                                    startTime
+                                                                }
+                                                                onChange={(e) =>
+                                                                    setStartTime(
+                                                                        e.target
+                                                                            .value
+                                                                    )
+                                                                }
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <div style={theme.fixed}>
+                                                        <label
+                                                            style={theme.input}
+                                                        >
+                                                            End Time
+                                                        </label>
+                                                        <div
+                                                            style={theme.fixed}
+                                                        >
+                                                            <Controls.Input
+                                                                name='endTime'
+                                                                type='time'
+                                                                value={endTime}
+                                                                onChange={(e) =>
+                                                                    setEndTime(
+                                                                        e.target
+                                                                            .value
+                                                                    )
+                                                                }
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <div
+                                                        style={{
+                                                            marginTop: '2.5rem',
+                                                        }}
+                                                    >
+                                                        <Controls.Button
+                                                            name='endTime'
+                                                            text='Submit'
+                                                            onClick={submit}
+                                                        />
+                                                    </div>
+                                                </Col>
+
+                                                <Col md={3}>
+                                                    <div style={theme.fixed}>
+                                                        <label
+                                                            style={theme.input}
+                                                        >
+                                                            Poster URL
+                                                        </label>
+                                                        <div
+                                                            style={theme.fixed}
+                                                        >
+                                                            <Controls.Input
+                                                                label='Cinema Number'
+                                                                name='fullName'
+                                                                value={poster}
+                                                                onChange={(e) =>
+                                                                    setPoster(
+                                                                        e.target
+                                                                            .value
+                                                                    )
+                                                                }
+                                                            />
+                                                            {poster && (
+                                                                <Image
+                                                                    src={poster}
+                                                                    style={{
+                                                                        height:
+                                                                            '300px',
+                                                                    }}
+                                                                />
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </Col>
+                                            </Row>
+                                        </Container>
                                     )}
                                 </Form>
                             </Col>

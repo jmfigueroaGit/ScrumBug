@@ -14,6 +14,7 @@ const Input = (props) => {
             margin='normal'
             autoComplete='off'
             fullWidth
+            required
             {...(error && { error: true, helperText: error })}
         />
     );

@@ -3,7 +3,7 @@ import slugify from 'slugify';
 
 const movieSchema = mongoose.Schema(
     {
-        title: {
+        movieTitle: {
             type: String,
             required: [true, 'Title field is required'],
         },
@@ -49,9 +49,34 @@ const movieSchema = mongoose.Schema(
             type: Number,
             required: [true, 'Duration field is required'],
         },
+        rating: {
+            type: String,
+            required: true,
+        },
         releasedDate: {
-            type: Date,
-            default: Date.now, //ayusin pa date format
+            type: String,
+            required: true,
+        },
+        endScreening: {
+            type: String,
+            required: true,
+        },
+        cinemaNumber: {
+            type: String,
+            required: true,
+        },
+        startTime: {
+            type: String,
+            required: true,
+        },
+        endTime: {
+            type: String,
+            required: true,
+        },
+        status: {
+            type: String,
+            required: true,
+            enum: ['Now Showing', 'Coming Soon'],
         },
     },
     {
@@ -60,7 +85,7 @@ const movieSchema = mongoose.Schema(
 );
 
 movieSchema.pre('save', function (next) {
-    this.slug = slugify(this.title, { lower: true });
+    this.slug = slugify(this.movieTitle, { lower: true });
     next();
 });
 

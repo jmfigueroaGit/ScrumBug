@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import { Row, Col, ListGroup, Container } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
@@ -71,6 +71,19 @@ const theme = {
 };
 
 const AdminDashboard = ({ history }) => {
+    const [imageIds, setImageIds] = useState();
+    const loadImages = async () => {
+        try {
+            const res = await fetch('/api/images');
+            const data = await res.json();
+            setImageIds(data);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+    useEffect(() => {
+        loadImages();
+    }, []);
     const dispatch = useDispatch();
 
     const userLogin = useSelector((state) => state.userLogin);
@@ -144,7 +157,9 @@ const AdminDashboard = ({ history }) => {
                                 </ListGroup.Item>
                             </ListGroup>
                         </Col>
-                        <Col sm={9} style={theme.mainBar}></Col>
+                        <Col sm={9} style={theme.mainBar}>
+                            
+                        </Col>
                     </Row>
                 </Container>
             ) : (

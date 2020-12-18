@@ -5,7 +5,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
 import { login } from '../actions/userActions';
-import { listMovies } from '../actions/movieAction';
+import {
+    listComingSoon,
+    listMovies,
+    listNowShowing,
+} from '../actions/movieAction';
 import Controls from '../components/controls/Control';
 import { useHistory, useLocation } from 'react-router-dom';
 const theme = {
@@ -71,13 +75,14 @@ const LoginScreen = (props) => {
             }
         }
     }, [history, userInfo, redirect]);
-
+    dispatch(listMovies());
+    dispatch(listNowShowing());
+    dispatch(listComingSoon());
     const submitHandler = (e) => {
         e.preventDefault();
         if (email.length === 0 || password.length === 0) {
             setMessage('Please fill in required fields');
         } else {
-            dispatch(listMovies());
             dispatch(login(email, password));
         }
     };

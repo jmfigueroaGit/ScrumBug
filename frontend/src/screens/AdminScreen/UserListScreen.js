@@ -177,7 +177,12 @@ const UserListScreen = ({ history }) => {
                                         </thead>
                                         <tbody>
                                             {users.map((user) => (
-                                                <tr key={user._id}>
+                                                <tr
+                                                    key={user._id}
+                                                    style={{
+                                                        overflowY: 'scroll',
+                                                    }}
+                                                >
                                                     <td>{user.fullName}</td>
                                                     <td>
                                                         <a

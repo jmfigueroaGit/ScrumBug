@@ -20,23 +20,28 @@ import UserListScreen from './screens/AdminScreen/UserListScreen';
 import UserEditScreen from './screens/AdminScreen/UserEditScreen';
 import AdminMovies from './screens/AdminScreen/AdminMovies';
 import AdminAddMovie from './screens/AdminScreen/AdminAddMovie';
-
+import AdminEditMovie from './screens/AdminScreen/AdminEditMovie';
+import NowShowing from './screens/NowShowing/NowShowing';
+import ComingSoon from './screens/NowShowing/ComingSoon';
 const App = () => {
     return (
         <Router>
             <Header />
             <main
                 style={{
-                    //  backgroundImage: `linear-gradient(to top, transparent 1%,transparent 0%,black 95%,black 100%), url("images/bg.gif")`,
+                    backgroundImage: `linear-gradient(to top, transparent 1%,transparent 0%,black 95%,black 100%), url("images/bg.gif")`,
                     backgroundColor: '#333333',
                     width: '100%',
-                    height: '100vh',
+                    height: '100%',
                     backgroundPosition: 'top',
                     backgroundSize: 'cover',
                     backgroundRepeat: 'no-repeat',
                 }}
             >
                 <Container fluid>
+                    <Route path='/HomeScreen' component={HomeScreen} />
+                    <Route path='/ComingSoon' component={ComingSoon} />
+                    <Route path='/NowShowing' component={NowShowing} />
                     <Route path='/login' component={LoginScreen} />
                     <Route path='/register/form' component={RegisterForm} />
                     <Route
@@ -75,6 +80,7 @@ const App = () => {
                     />
                     <Route path='/admin/movies' component={AdminMovies} />
                     <Route path='/admin/add-movie' component={AdminAddMovie} />
+                    <Route path='/admin/movie/:id' component={AdminEditMovie} />
                 </Container>
             </main>
             <Footer />

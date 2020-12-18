@@ -158,7 +158,7 @@ const getUserById = asyncHandler(async (req, res) => {
 // @access  Private/Admin
 const updateUser = asyncHandler(async (req, res) => {
     const user = await User.findById(req.params.id);
-
+    const users = await User.findByIdAndUpdate
     if (user) {
         user.fullName = req.body.fullName || user.fullName;
         user.email = req.body.email || user.email;

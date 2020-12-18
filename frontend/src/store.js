@@ -18,6 +18,9 @@ import {
     movieAddReducer,
     movieUpdateReducer,
     movieDeleteReducer,
+    movieDetailsReducer,
+    movieNowReducer,
+    movieComingReducer,
 } from './reducers/movieReducers';
 
 const reducer = combineReducers({
@@ -35,6 +38,9 @@ const reducer = combineReducers({
     movieAdd: movieAddReducer,
     movieUpdate: movieUpdateReducer,
     movieDelete: movieDeleteReducer,
+    movieDetails: movieDetailsReducer,
+    movieNow: movieNowReducer,
+    movieComing: movieComingReducer,
 });
 
 const userInfoFromStorage = localStorage.getItem('userInfo')
@@ -42,6 +48,9 @@ const userInfoFromStorage = localStorage.getItem('userInfo')
     : null;
 const movieInfoFromStorage = localStorage.getItem('movieInfo')
     ? JSON.parse(localStorage.getItem('movieInfo'))
+    : null;
+const movieAddFromStorage = localStorage.getItem('movieAdd')
+    ? JSON.parse(localStorage.getItem('movieAdd'))
     : null;
 
 const initialState = {

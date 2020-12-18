@@ -3,6 +3,7 @@ import { Navbar, Nav, Container, Image, NavDropdown } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { LinkContainer } from 'react-router-bootstrap';
 import { logout } from '../actions/userActions';
+
 const Header = () => {
     const dispatch = useDispatch();
     const userLogin = useSelector((state) => state.userLogin);
@@ -25,6 +26,37 @@ const Header = () => {
                                 />
                             </Navbar.Brand>
                         </LinkContainer>
+
+                        <LinkContainer to='/HomeScreen'>
+                            <Nav.Link>
+                                <span
+                                    style={{ color: 'white', fontSize: '15px' }}
+                                >
+                                    HOME
+                                </span>
+                            </Nav.Link>
+                        </LinkContainer>
+
+                        <LinkContainer to='/NowShowing'>
+                            <Nav.Link>
+                                <span
+                                    style={{ color: 'white', fontSize: '15px' }}
+                                >
+                                    NOW SHOWING
+                                </span>
+                            </Nav.Link>
+                        </LinkContainer>
+
+                        <LinkContainer to='/ComingSoon'>
+                            <Nav.Link>
+                                <span
+                                    style={{ color: 'white', fontSize: '15px' }}
+                                >
+                                    COMING SOON
+                                </span>
+                            </Nav.Link>
+                        </LinkContainer>
+
                         <Navbar.Toggle aria-controls='basic-navbar-nav' />
                         <Navbar.Collapse id='basic-navbar-nav'>
                             <Nav

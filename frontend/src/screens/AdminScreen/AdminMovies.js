@@ -5,7 +5,12 @@ import { Table, Button, Row, Col, ListGroup, Container } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../../components/Message';
 import Loader from '../../components/Loader';
-import { listMovies, deleteMovie } from '../../actions/movieAction';
+import {
+    listMovies,
+    deleteMovie,
+    updateMovie,
+    getMovieDetails,
+} from '../../actions/movieAction';
 import { Form } from '../RegisterScreen/useForm';
 
 const theme = {
@@ -86,10 +91,10 @@ const AdminMovies = ({ history }) => {
             history.push('/login');
         }
     }, [dispatch, history, userInfo]);
-    // const editHandler = (id) => {
-    //     dispatch(getUserDetails(id));
-    //     history.push(`/admin/user/${id}/edit`);
-    // };
+    const editHandler = (id) => {
+        dispatch(getMovieDetails(id));
+        history.push(`/admin/user/${id}/edit`);
+    };
 
     const deleteHandler = (id) => {
         if (window.confirm('Are you sure')) {
@@ -215,6 +220,7 @@ const AdminMovies = ({ history }) => {
                                                     <th>TITLE</th>
                                                     <th>GENRE</th>
                                                     <th>DIRECTOR</th>
+                                                    <th>STATUS</th>
                                                     <th>EDIT MOVIE</th>
                                                     <th>DELETE MOVIE</th>
                                                 </tr>
@@ -222,18 +228,26 @@ const AdminMovies = ({ history }) => {
                                             <tbody>
                                                 {moviesList?.map((movie) => (
                                                     <tr key={movie._id}>
-                                                        <td>{movie.title}</td>
+                                                        <td>
+                                                            {movie.movieTitle}
+                                                        </td>
                                                         <td>{movie.genre}</td>
                                                         <td>
                                                             {movie.director}
                                                         </td>
+                                                        <td>{movie.status}</td>
                                                         <td>
                                                             <LinkContainer
-                                                                to={`/admin/user/${movie._id}/edit`}
+                                                                to={`/admin/movie/${movie._id}`}
                                                             >
                                                                 <Button
                                                                     variant='light'
                                                                     className='btn-sm'
+                                                                    onClick={() =>
+                                                                        editHandler(
+                                                                            movie._id
+                                                                        )
+                                                                    }
                                                                 >
                                                                     <i className='fas fa-edit'></i>
                                                                 </Button>
